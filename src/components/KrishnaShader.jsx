@@ -95,8 +95,6 @@ const FS = /* glsl */`
     // Now calculate logical pixel coords
     vec2 frag = uv * uRes; 
     
-    vec2 cellUv = floor(uv * uRes / CELL) * CELL / uRes;
-    
     vec2 cellIdx = floor(frag / CELL);
     vec2 cellCnt = floor(uRes / CELL);
 
