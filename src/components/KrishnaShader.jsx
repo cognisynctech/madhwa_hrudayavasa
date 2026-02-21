@@ -65,6 +65,9 @@ const FS = /* glsl */`
   uniform vec2      uRes;          // CSS pixel size of this canvas panel
   uniform float     uImgAspect;    // naturalWidth / naturalHeight of portrait
   uniform float     uLoaded;
+  uniform vec2      uClickPos;
+  uniform float     uClickTime;
+  uniform float     uIsPhoto;
 
   varying vec2 vUv;
 
@@ -86,13 +89,18 @@ const FS = /* glsl */`
 
     // Use the perfectly normalized vertex UVs (0 to 1) to completely ignore OS display scaling / device ratio
     vec2 uv = vUv;
-    vec2 frag = uv * uRes; // Maps to logical CSS pixels completely agnostic of dpr
+    float canvasAspect = uRes.x / uRes.y;
+    vec2 aspectVec = vec2(canvasAspect, 1.0);
+    // ── Static Layout ────────────
+    // Now calculate logical pixel coords
+    vec2 frag = uv * uRes; 
+    
+    vec2 cellUv = floor(uv * uRes / CELL) * CELL / uRes;
     
     vec2 cellIdx = floor(frag / CELL);
     vec2 cellCnt = floor(uRes / CELL);
 
     // ── Letterboxing logic ────────────────────────────────────
-    float canvasAspect = uRes.x / uRes.y;
     float coverX=1.0, coverY=1.0;
     vec2 offset = vec2(0.0);
 
@@ -116,12 +124,6 @@ const FS = /* glsl */`
     // Map to portrait UV space
     vec2 pUv = (cellUv - offset) / vec2(coverX, coverY);
 
-    // ── Mouse Shimmer ─────────────────────────────────────────
-    // Apply canvas aspect ratio to the distance math so the highlight is a perfect circle
-    vec2 aspectVec = vec2(canvasAspect, 1.0);
-    float mDist = distance(uMouse * aspectVec, cellUv * aspectVec);
-    // Removing the fluid ripple displacement
-
     // ── Sample portrait ───────────────────────────────────────
     vec4  pTex   = texture2D(uPortrait, pUv);
     vec3  pRGB   = pTex.rgb;
@@ -134,13 +136,9 @@ const FS = /* glsl */`
     // Smooth step is no longer needed to hide the bg since we use the PNG alpha
     float isFigure = pAlpha;
 
-    // ── Dynamic Character Scramble ─────────
-    // Characters stay static by default, but scramble like the Matrix when the cursor hovers them
-    float highlightNoise = random(cellIdx) * 0.02;
-    float isHovered = step(mDist + highlightNoise, 0.04);
-    
-    // Shift the seed based on time ONLY if hovered
-    float randVal = random(cellIdx + isHovered * floor(uTime * 15.0));
+    // ── Static Character Grid ─────────
+    // Characters are structurally warped by the grid, but do not scramble their seed
+    float randVal = random(cellIdx);
     float charIdx = floor(randVal * NUM_CH);
     
     float atlasCol = mod(charIdx, ATLAS_N);
@@ -153,54 +151,47 @@ const FS = /* glsl */`
     if (cG < 0.05) { gl_FragColor = vec4(0.0); return; }
 
     // ── Good Fella Shading Model (Volumetric Opacity) ─────────
-    // The key to the facial clarity is mapping the image's shadows to TEXT OPACITY.
-    // Dark parts fade cleanly into black background space. Highlights become 100% visible text.
-    
-    // Normalize the figure's brightness (0.0 to ~0.80)
     float figureLuma = smoothstep(0.0, 0.8, bright);
-
-    // Opacity: Map dark face to subtle 20% visible text, and bright jewels to 100% solid text
     float textOpacity = isFigure * mix(0.15, 1.0, figureLuma);
-
-    // Sharpen the color: Deep burnt orange in shadows -> Bright popping orange in highlights
-    vec3 col = mix(vec3(0.8, 0.3, 0.05), vec3(1.0, 0.65, 0.15), figureLuma);
+    vec3 asciiCol = mix(vec3(0.8, 0.3, 0.05), vec3(1.0, 0.65, 0.15), figureLuma);
 
     // ── Intro Reveal Animation (Center outwards) ──────────────
-    // Starts immediately on load, but expands slowly across the figure
     float introTime = uTime * 0.6; 
-    
-    // Calculate distance from the center of the canvas [0.5, 0.5]
-    // Center is 0, corners are ~0.707
     float distFromCenter = distance(cellUv, vec2(0.5, 0.5));
-    float sweepEdge = distFromCenter * 1.5; // Scale it so the edge reaches corners efficiently
-    
-    float popNoise = random(cellIdx) * 0.15; // Jitter the reveal per-cell
+    float sweepEdge = distFromCenter * 1.5; 
+    float popNoise = random(cellIdx) * 0.15; 
     float sweepPos = introTime - (sweepEdge + popNoise);
-    
-    // Hide text that the sweep hasn't reached yet
     float reveal = smoothstep(0.0, 0.01, sweepPos);
-    
-    // Bright white flash at the leading edge of the sweep
     float flash = smoothstep(0.0, 0.05, sweepPos) * (1.0 - smoothstep(0.05, 0.6, sweepPos));
     
     textOpacity *= reveal;
-    col = mix(col, vec3(1.0, 1.0, 1.0), flash);
+    asciiCol = mix(asciiCol, vec3(1.0, 1.0, 1.0), flash);
 
-    // ── Mouse Hover Boost (Glitchy Cluster)
-    col = mix(col, vec3(1.0, 1.0, 1.0), isHovered);
+    vec4 finalAscii = vec4(asciiCol, cG * textOpacity);
+    vec4 finalPhoto = vec4(pRGB, isFigure);
+
+    // ── Click Expansion Transition ──
+    float clickDist = distance(uClickPos * aspectVec, uv * aspectVec);
+    float clickRadius = (uTime - uClickTime) * 0.8; // Dramatically Slower explosion ring speed
+    float inCircle = smoothstep(clickRadius + 0.08, clickRadius - 0.08, clickDist); // Softer edge
     
-    // Ensure the hovered area is visible even if it's in shadow
-    textOpacity = max(textOpacity, isHovered * isFigure);
+    // currentMode maps 0.0=ASCII layout to 1.0=Photo layout
+    float currentMode = mix(1.0 - uIsPhoto, uIsPhoto, inCircle);
+    
+    vec4 finalColor = mix(finalAscii, finalPhoto, currentMode);
+    
+    // Aesthetic subtle flash ring at the edge of the click radius
+    float ring = smoothstep(0.04, 0.0, abs(clickDist - clickRadius)) * step(0.001, uClickTime);
+    finalColor.rgb = mix(finalColor.rgb, vec3(1.0, 0.9, 0.6), ring * 0.4 * clamp(1.0 - clickRadius*0.5, 0.0, 1.0));
 
-    // Apply the opacity to the character mask
-    gl_FragColor = vec4(col, cG * textOpacity);
+    gl_FragColor = finalColor;
   }
 `
 
 /* ══════════════════════════════════════════════════════
    ShaderPlane — viewport-filling quad inside R3F Canvas
 ══════════════════════════════════════════════════════ */
-function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded }) {
+function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, clickStateRef }) {
     const matRef = useRef()
     const { size, viewport } = useThree()
 
@@ -211,18 +202,35 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded }) {
         uTime: { value: 0 },
         uRes: { value: new THREE.Vector2(size.width, size.height) },
         uImgAspect: { value: imgAspect },
-        uLoaded: { value: isLoaded ? 1.0 : 0.0 }
+        uLoaded: { value: isLoaded ? 1.0 : 0.0 },
+        uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
+        uClickTime: { value: -100.0 },
+        uIsPhoto: { value: 0.0 }
     }), [portraitTex, atlasTex, imgAspect, isLoaded])
 
     useFrame(({ clock }) => {
         if (!matRef.current) return
+
+        if (clickStateRef.current.wantsToggle) {
+            clickStateRef.current.wantsToggle = false;
+            clickStateRef.current.time = clock.getElapsedTime();
+            clickStateRef.current.isPhoto = clickStateRef.current.isPhoto > 0.5 ? 0.0 : 1.0;
+        }
+
         matRef.current.uniforms.uTime.value = clock.getElapsedTime()
         matRef.current.uniforms.uMouse.value.set(mouseRef.current[0], mouseRef.current[1])
         matRef.current.uniforms.uRes.value.set(size.width, size.height)
+        matRef.current.uniforms.uClickPos.value.set(clickStateRef.current.x, clickStateRef.current.y)
+        matRef.current.uniforms.uClickTime.value = clickStateRef.current.time
+        matRef.current.uniforms.uIsPhoto.value = clickStateRef.current.isPhoto
     })
 
     return (
-        <mesh>
+        <mesh onClick={(e) => {
+            clickStateRef.current.x = e.uv.x;
+            clickStateRef.current.y = e.uv.y;
+            clickStateRef.current.wantsToggle = true;
+        }}>
             <planeGeometry args={[viewport.width, viewport.height]} />
             <shaderMaterial
                 ref={matRef}
@@ -242,6 +250,7 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded }) {
 export default function KrishnaShader() {
     const containerRef = useRef(null)
     const mouseRef = useRef([-10.0, -10.0])
+    const clickStateRef = useRef({ time: -100.0, x: 0.5, y: 0.5, isPhoto: 0.0, wantsToggle: false })
     const [imgAspect, setImgAspect] = useState(0.75)   // portrait default until loaded
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -292,6 +301,7 @@ export default function KrishnaShader() {
                     mouseRef={mouseRef}
                     imgAspect={imgAspect}
                     isLoaded={isLoaded}
+                    clickStateRef={clickStateRef}
                 />
             </Canvas>
         </div>
