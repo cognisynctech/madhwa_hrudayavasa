@@ -134,9 +134,13 @@ const FS = /* glsl */`
     // Smooth step is no longer needed to hide the bg since we use the PNG alpha
     float isFigure = pAlpha;
 
-    // ── Static Character Grid ─────────
-    // Characters are structurally warped by the grid, but do not scramble their seed
-    float randVal = random(cellIdx);
+    // ── Mouse Hover Calculation ─────────
+    float mDist = distance(uMouse * aspectVec, cellUv * aspectVec);
+    float highlightNoise = random(cellIdx) * 0.02;
+    float isHovered = step(mDist + highlightNoise, 0.04);
+
+    // ── Dynamic Character Scramble (on hover only) ─────────
+    float randVal = random(cellIdx + isHovered * floor(uTime * 15.0));
     float charIdx = floor(randVal * NUM_CH);
     
     float atlasCol = mod(charIdx, ATLAS_N);
@@ -165,6 +169,11 @@ const FS = /* glsl */`
     textOpacity *= reveal;
     asciiCol = mix(asciiCol, vec3(1.0, 1.0, 1.0), flash);
 
+    // ── Hover Glitch Highlight ──
+    vec3 hoverCol = mix(vec3(1.0), vec3(1.0, 0.45, 0.15), uIsPhoto); // White if ascii, vibrant orange if photo
+    asciiCol = mix(asciiCol, hoverCol, isHovered);
+    textOpacity = max(textOpacity, isHovered * isFigure);
+
     vec4 finalAscii = vec4(asciiCol, cG * textOpacity);
     vec4 finalPhoto = vec4(pRGB, isFigure);
 
@@ -176,7 +185,10 @@ const FS = /* glsl */`
     // currentMode maps 0.0=ASCII layout to 1.0=Photo layout
     float currentMode = mix(1.0 - uIsPhoto, uIsPhoto, inCircle);
     
-    vec4 finalColor = mix(finalAscii, finalPhoto, currentMode);
+    // Hovering punches a hole through the photo to reveal the scanning ascii text underneath
+    float finalBlend = currentMode * (1.0 - isHovered);
+    
+    vec4 finalColor = mix(finalAscii, finalPhoto, finalBlend);
     
     // Aesthetic subtle flash ring at the edge of the click radius
     float ring = smoothstep(0.04, 0.0, abs(clickDist - clickRadius)) * step(0.001, uClickTime);
