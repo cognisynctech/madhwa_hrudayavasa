@@ -1,0 +1,33 @@
+.cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    will-change: transform;
+}
+
+.cursor-follower {
+    position: fixed;
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--color-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    will-change: transform;
+}
+
+@media (max-width: 768px) {
+
+    .cursor,
+    .cursor-follower {
+        display: none;
+    }
+}

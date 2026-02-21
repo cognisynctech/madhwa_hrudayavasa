@@ -1,0 +1,816 @@
+/* ══════════════════════════
+   HOME PAGE — REJOUICE STYLE
+══════════════════════════ */
+.home {
+    width: 100%
+}
+
+/* ──────────────────────────
+   HERO — 70/30 SPLIT + SPOTLIGHT
+────────────────────────── */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    display: flex;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+/* Left 70% — text */
+.hero-left {
+    position: relative;
+    width: 62%;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    z-index: 2;
+}
+
+.hero-text-wrap {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    padding: clamp(5rem, 9vw, 8rem) var(--pad) 0;
+    transform-origin: top left;
+}
+
+.hero-title {
+    font-family: var(--font-kn);
+    font-size: clamp(2.8rem, 7vw, 8.5rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    will-change: transform;
+}
+
+.hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    gap: 3rem;
+    padding: 0 var(--pad) clamp(2rem, 4vw, 3.5rem);
+}
+
+.hero-col {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    color: var(--fg-dim);
+    max-width: 200px;
+}
+
+.hero-arrow {
+    margin-left: auto;
+    font-size: 1rem;
+    color: var(--fg-dim);
+    animation: arrowBounce 2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(6px)
+    }
+}
+
+/* Right — WebGL canvas, absolute-positioned from 50% to right edge.
+   This lets the figure start from center like the reference (Good Fella). */
+.hero-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52%;
+    /* starts at ~48% from left */
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* R3F Canvas wrapper fills the slot */
+.hero-right>div {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.hero-right canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Left-edge fade: dark → transparent so text reads clearly */
+.hero-right-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, rgba(10, 10, 10, 0) 28%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column
+    }
+
+    .hero-left {
+        width: 100%
+    }
+
+    .hero-right {
+        width: 100%;
+        height: 30vh
+    }
+}
+
+/* ──────────────────────────
+   SHOWREEL
+────────────────────────── */
+.showreel {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: hidden;
+    cursor: none;
+}
+
+.showreel-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    /* Flips the video horizontally to fix selfie-camera mirroring */
+}
+
+.showreel-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(1.5rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: var(--fg);
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    letter-spacing: -0.01em;
+}
+
+.showreel.hovered .showreel-label {
+    opacity: 0
+}
+
+.showreel-badge {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.3rem;
+    border-radius: 100px;
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.6;
+    transition: opacity 0.28s ease, scale 0.35s var(--ease);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.showreel.hovered .showreel-badge {
+    opacity: 1;
+    scale: 1
+}
+
+/* ──────────────────────────
+   MISSION
+────────────────────────── */
+.mission {
+    padding: clamp(3rem, 6vw, 8rem) 0
+}
+
+.mission-text {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    padding: clamp(2rem, 4vw, 5rem) 0;
+    max-width: 1100px;
+}
+
+.mission-text em {
+    font-style: italic
+}
+
+.mission-link {
+    border-bottom: 1px solid var(--fg-dim);
+    padding-bottom: 2px;
+    transition: opacity 0.25s;
+}
+
+.mission-link:hover {
+    opacity: 0.5;
+    border-bottom-color: transparent
+}
+
+/* ──────────────────────────
+   ESSENTIALS
+────────────────────────── */
+.essentials {
+    padding: clamp(2rem, 4vw, 5rem) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.essentials-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: clamp(2rem, 7vw, 10rem);
+    align-items: start;
+    padding: clamp(2.5rem, 5vw, 5rem) 0;
+}
+
+.essentials-tagline {
+    font-size: clamp(1.2rem, 2.4vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.essentials-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem
+}
+
+.essentials-body p {
+    font-size: clamp(0.88rem, 1.3vw, 1rem);
+    line-height: 1.8;
+    color: var(--fg-dim)
+}
+
+.essentials-link {
+    display: inline-flex;
+    font-size: var(--fs-sm);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3px;
+    width: fit-content;
+    transition: opacity 0.25s;
+}
+
+.essentials-link:hover {
+    opacity: 0.5
+}
+
+@media (max-width: 680px) {
+    .essentials-row {
+        grid-template-columns: 1fr;
+        gap: 2rem
+    }
+}
+
+/* ──────────────────────────
+   HIGHLIGHTS — dark section
+────────────────────────── */
+.highlights {
+    background: var(--bg);
+    padding-top: clamp(2.5rem, 5vw, 6rem);
+}
+
+.highlights-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 1.5rem;
+}
+
+.highlights-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.highlights-all {
+    font-size: var(--fs-sm);
+    color: var(--fg-dim);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: opacity 0.25s;
+}
+
+.highlights-all:hover {
+    opacity: 0.5
+}
+
+.hl-card {
+    position: relative;
+    overflow: hidden;
+    cursor: none
+}
+
+.hl-card--full {
+    width: 100%;
+    height: 80vh;
+    display: block;
+    /* Gap below before the split cards */
+    margin-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+
+.hl-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr
+}
+
+.hl-card--half {
+    width: 100%;
+    height: 65vh;
+    display: block
+}
+
+.hl-card-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0
+}
+
+.hl-card-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    transition: filter 0.5s ease, transform 0.7s var(--ease);
+}
+
+.hl-card.hovered .hl-card-bg img {
+    filter: brightness(0.3);
+    transform: scale(1.04)
+}
+
+.hl-card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: clamp(1.5rem, 3vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.hl-card-sub {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(242, 240, 235, 0.5);
+}
+
+.hl-card-title {
+    font-family: var(--font-kn);
+    font-size: clamp(1.3rem, 3vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    line-height: 1;
+    transition: transform 0.4s var(--ease);
+}
+
+.hl-card.hovered .hl-card-title {
+    transform: translateY(-6px)
+}
+
+.hl-card-desc {
+    font-size: clamp(0.76rem, 1.2vw, 0.92rem);
+    color: rgba(242, 240, 235, 0.5);
+    max-width: 400px;
+    margin-top: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hl-card.hovered .hl-card-desc {
+    opacity: 1
+}
+
+.hl-preview {
+    position: absolute;
+    z-index: 20;
+    width: clamp(180px, 22vw, 340px);
+    aspect-ratio: 16 / 10;
+    transform: translate(-50%, -55%);
+    pointer-events: none;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0;
+    scale: 0.8;
+    transition: opacity 0.35s ease, scale 0.4s var(--ease);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+}
+
+.hl-card.hovered .hl-preview {
+    opacity: 1;
+    scale: 1
+}
+
+.hl-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block
+}
+
+/* ──────────────────────────
+   QUOTE BAR — dark→white bridge
+────────────────────────── */
+.quote-bar {
+    background: var(--bg);
+    padding: clamp(4rem, 8vw, 10rem) 0;
+    border-top: 1px solid var(--border);
+}
+
+.quote-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.quote-mark {
+    font-size: 5rem;
+    line-height: 0.5;
+    color: var(--fg-dim);
+    font-family: Georgia, serif;
+    opacity: 0.3;
+}
+
+.quote-text {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    font-style: italic;
+}
+
+.quote-cite {
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+/* ──────────────────────────
+   EPISODE TICKER — WHITE BG, organic tiles
+────────────────────────── */
+.ep-ticker {
+    background: #f2f0eb;
+    color: #0a0a0a;
+    padding: clamp(3rem, 6vw, 7rem) 0;
+    overflow: hidden;
+}
+
+.ep-ticker .container {
+    position: relative
+}
+
+.ep-ticker-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: clamp(1.5rem, 3vw, 3rem);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.12);
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.ep-ticker-label {
+    font-size: clamp(1.8rem, 4vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #0a0a0a;
+    line-height: 1;
+}
+
+.ep-ticker-all {
+    font-size: var(--fs-sm);
+    color: rgba(10, 10, 10, 0.55);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.2);
+    padding-bottom: 2px;
+    transition: opacity 0.25s;
+}
+
+.ep-ticker-all:hover {
+    opacity: 0.5
+}
+
+/* Scrolling track */
+.ep-track-wrap {
+    width: 100%;
+    overflow: hidden;
+    padding: 0 var(--pad)
+}
+
+.ep-track {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(12px, 1.2vw, 20px);
+    width: max-content;
+    animation: epScroll 60s linear infinite;
+    /* very slow */
+}
+
+.ep-track:hover {
+    animation-play-state: paused
+}
+
+@keyframes epScroll {
+    0% {
+        transform: translateX(0)
+    }
+
+    100% {
+        transform: translateX(-50%)
+    }
+}
+
+/* Individual tiles — organic sizes */
+.ep-tile {
+    flex: 0 0 auto;
+    background: #fff;
+    border-radius: clamp(12px, 1.5vw, 20px);
+    overflow: hidden;
+    transition: transform 0.35s var(--ease), box-shadow 0.35s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.ep-tile:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Organic size variants */
+.ep-tile--tall {
+    width: clamp(220px, 22vw, 300px);
+    /* tall stands out */
+}
+
+.ep-tile--wide {
+    width: clamp(320px, 30vw, 420px)
+}
+
+.ep-tile--square {
+    width: clamp(260px, 24vw, 340px)
+}
+
+.ep-tile-img {
+    overflow: hidden
+}
+
+.ep-tile--tall .ep-tile-img {
+    height: clamp(280px, 32vw, 420px)
+}
+
+.ep-tile--wide .ep-tile-img {
+    height: clamp(180px, 18vw, 240px)
+}
+
+.ep-tile--square .ep-tile-img {
+    height: clamp(220px, 22vw, 300px)
+}
+
+.ep-tile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s var(--ease);
+    filter: grayscale(10%);
+}
+
+.ep-tile:hover .ep-tile-img img {
+    transform: scale(1.05)
+}
+
+.ep-tile-info {
+    padding: 1rem 1.1rem 1.2rem
+}
+
+.ep-tile-cat {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(10, 10, 10, 0.35);
+    margin-bottom: 4px;
+}
+
+.ep-tile-title {
+    font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: #0a0a0a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ──────────────────────────
+   PHILOSOPHY — stays WHITE
+────────────────────────── */
+.philosophy {
+    background: #f2f0eb;
+    color: #0a0a0a;
+    padding: clamp(4rem, 8vw, 10rem) 0;
+}
+
+.philosophy-top {
+    margin-bottom: clamp(3rem, 5vw, 6rem)
+}
+
+.philosophy-heading {
+    font-size: clamp(2.5rem, 7vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+    color: #0a0a0a;
+}
+
+.philosophy-rows {
+    display: flex;
+    flex-direction: column
+}
+
+.philosophy-row {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: clamp(1.5rem, 5vw, 6rem);
+    align-items: start;
+    padding: clamp(2rem, 4vw, 3.5rem) 0;
+    border-top: 1px solid rgba(10, 10, 10, 0.12);
+}
+
+.philosophy-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.2rem
+}
+
+.philosophy-num {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    opacity: 0.4;
+    color: #0a0a0a
+}
+
+.philosophy-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    color: #0a0a0a
+}
+
+.philosophy-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem
+}
+
+.philosophy-title {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: #0a0a0a
+}
+
+.philosophy-body {
+    font-size: clamp(0.88rem, 1.3vw, 1rem);
+    line-height: 1.8;
+    opacity: 0.55;
+    max-width: 560px;
+    color: #0a0a0a
+}
+
+@media (max-width: 680px) {
+    .philosophy-row {
+        grid-template-columns: 1fr;
+        gap: 1rem
+    }
+}
+
+/* ──────────────────────────
+   VIDEO GROW SECTION
+────────────────────────── */
+.video-grow {
+    padding: clamp(3rem, 6vw, 8rem) 0;
+    background: #f2f0eb;
+    overflow: hidden;
+}
+
+.video-grow-inner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 8;
+    overflow: hidden;
+    transform-origin: center center;
+    will-change: transform, border-radius;
+}
+
+.video-grow-vid {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-grow-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: clamp(1.5rem, 3vw, 3rem);
+}
+
+.video-grow-label {
+    font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+    color: #f2f0eb;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+/* ──────────────────────────
+   CTA — text-swap hover (FIXED)
+────────────────────────── */
+.cta-section {
+    background: #f2f0eb;
+    padding: clamp(4rem, 8vw, 10rem) 0;
+}
+
+.cta-inner {
+    display: flex;
+    justify-content: center;
+    padding: clamp(2.5rem, 5vw, 6rem) 0;
+}
+
+/* Wrapper clips to exactly ONE word height */
+.cta-link {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    color: #0a0a0a;
+    text-decoration: none;
+    /* Height = font-size * line-height. We set line-height:1 below */
+    /* JS-free: use padding trick so it hugs one line */
+    padding-bottom: 4px;
+    border-bottom: 2px solid #0a0a0a;
+}
+
+.cta-word {
+    display: block;
+    font-size: clamp(2.5rem, 7vw, 9rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    white-space: nowrap;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Primary: visible */
+.cta-word--primary {
+    transform: translateY(0)
+}
+
+.cta-word--secondary {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(110%);
+}
+
+.cta-link.hovered .cta-word--primary {
+    transform: translateY(-110%)
+}
+
+.cta-link.hovered .cta-word--secondary {
+    transform: translateY(0)
+}

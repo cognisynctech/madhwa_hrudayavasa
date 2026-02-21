@@ -1,0 +1,142 @@
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem var(--pad);
+    /* always visible - mix-blend-mode to work on light/dark sections */
+}
+
+/* Force white text always — works on both light (showreel) and dark sections */
+.nav-brand,
+.nav-link,
+.nav-cta {
+    mix-blend-mode: difference;
+    color: white;
+}
+
+.nav-brand {
+    font-family: var(--font-kn);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-link {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    transition: opacity 0.2s;
+}
+
+.nav-link:hover {
+    opacity: 0.5
+}
+
+.nav-link.active {
+    opacity: 1
+}
+
+.nav-cta {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: opacity 0.25s;
+}
+
+.nav-cta:hover {
+    opacity: 0.5
+}
+
+/* Hamburger */
+.nav-burger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    mix-blend-mode: difference;
+}
+
+.nav-burger span {
+    display: block;
+    width: 22px;
+    height: 1px;
+    background: white;
+    transition: all 0.3s var(--ease);
+    transform-origin: center;
+}
+
+.nav-burger.open span:nth-child(1) {
+    transform: translateY(3.5px) rotate(45deg)
+}
+
+.nav-burger.open span:nth-child(2) {
+    transform: translateY(-3.5px) rotate(-45deg)
+}
+
+/* Mobile menu */
+.nav-mobile {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease);
+}
+
+.nav-mobile.open {
+    opacity: 1;
+    pointer-events: all
+}
+
+.nav-mobile-link {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--fg-dim);
+    transition: color 0.25s;
+}
+
+.nav-mobile-link:hover {
+    color: var(--fg)
+}
+
+.nav-mobile-cta {
+    font-size: var(--fs-sm);
+    color: var(--fg-dim);
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+
+    .nav-links,
+    .nav-cta {
+        display: none
+    }
+
+    .nav-burger {
+        display: flex
+    }
+}

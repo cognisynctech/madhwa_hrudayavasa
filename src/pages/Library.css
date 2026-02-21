@@ -1,0 +1,150 @@
+.lib {
+    padding-top: 4rem;
+}
+
+.lib-header {
+    padding-bottom: 0;
+}
+
+/* Big title clip — same as hero */
+.lib-title-wrap {
+    overflow: hidden;
+    padding: clamp(3rem, 6vw, 5.5rem) var(--pad) clamp(1rem, 2vw, 2rem);
+}
+
+.lib-title {
+    font-size: clamp(4rem, 12vw, 14rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    color: var(--fg);
+}
+
+/* Controls: search + filters */
+.lib-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+}
+
+.lib-search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+}
+
+.lib-search svg {
+    color: var(--fg-dim)
+}
+
+.lib-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: var(--fs-sm);
+    width: 180px;
+}
+
+.lib-search-input::placeholder {
+    color: var(--fg-dim)
+}
+
+.lib-clear {
+    background: none;
+    border: none;
+    color: var(--fg-dim);
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+/* Filters */
+.lib-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.lib-filter {
+    font-family: var(--font);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    background: transparent;
+    color: var(--fg-dim);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.lib-filter:hover {
+    color: var(--fg);
+    border-color: rgba(242, 240, 235, 0.3);
+}
+
+.lib-filter.active {
+    color: var(--bg);
+    background: var(--fg);
+    border-color: var(--fg);
+}
+
+/* Grid */
+.lib-grid-section {
+    padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 8vw, 8rem);
+}
+
+.lib-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border);
+    gap: 1px;
+    background: var(--border);
+}
+
+.lib-grid>* {
+    background: var(--bg);
+}
+
+@media (max-width: 900px) {
+    .lib-grid {
+        grid-template-columns: repeat(2, 1fr)
+    }
+}
+
+@media (max-width: 580px) {
+    .lib-grid {
+        grid-template-columns: 1fr
+    }
+}
+
+/* Empty state */
+.lib-empty {
+    padding: 6rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.lib-empty p {
+    color: var(--fg-dim);
+    font-size: var(--fs-sm);
+}
+
+.lib-empty button {
+    font-family: var(--font);
+    font-size: var(--fs-xs);
+    color: var(--fg);
+    background: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    padding-bottom: 3px;
+    letter-spacing: 0.04em;
+}
