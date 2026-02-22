@@ -9,6 +9,34 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'ATSBengaluru';
+  src: url('./assets/fonts/ATSBengaluru-SquareBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ATSBengaluru';
+  src: url('./assets/fonts/ATSBengaluru-SquareRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ATSBengaluruDot';
+  src: url('./assets/fonts/ATSBengaluru-DotBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ATSBengaluruDot';
+  src: url('./assets/fonts/ATSBengaluru-DotRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {
@@ -27,6 +55,7 @@
   --font: 'Space Grotesk', system-ui, sans-serif;
   --font-kn: 'Noto Serif Kannada', serif;
   --font-samarkan: 'Samarkan', serif;
+  --font-bengaluru: 'ATSBengaluru', serif;
 
   --fs-hero: clamp(5rem, 18.5vw, 22rem);
   --fs-xl: clamp(2.4rem, 6vw, 7rem);

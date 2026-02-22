@@ -36,17 +36,67 @@
 }
 
 .hero-title {
-    font-family: var(--font-samarkan), var(--font);
-    font-size: clamp(3rem, 11vw, 13rem);
-    font-weight: 400;
-    /* Samarkan is naturally bold */
-    line-height: 0.95;
-    letter-spacing: 0.02em;
-    color: var(--fg);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     will-change: transform;
-    margin-bottom: 2rem;
-    padding-top: 1rem;
+    gap: 0;
+    margin-bottom: 1.5rem;
 }
+
+/* MADHWA + VAASA — Samarkan pseudo-Devanagari */
+.title-samarkan {
+    font-family: var(--font-samarkan), serif;
+    font-size: clamp(3.5rem, 10vw, 11rem);
+    font-weight: 400;
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+    color: var(--fg);
+    display: block;
+}
+
+/* ಹೃದಯ — Bengaluru SquareBold Kannada, copper accent, centered centerpiece */
+.title-kn-hero {
+    font-family: var(--font-bengaluru);
+    font-size: clamp(2.8rem, 7.5vw, 8.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: normal;
+    /* Fixes Kannada syllables disconnecting */
+    color: var(--accent);
+    display: block;
+    align-self: flex-start;
+    /* left-aligned, matching MADHWA and VAASA */
+    text-align: left;
+    margin-top: 0.02em;
+    margin-bottom: -0.15em;
+    /* pull VAASA up, closing the gap */
+    opacity: 0.95;
+}
+
+/* VAASA — same font as MADHWA */
+.title-vaasa {
+    opacity: 1;
+}
+
+/* ─── Hoverable Text Effect ─── */
+.hoverable-char {
+    display: inline-block;
+    transition: color 0.15s ease, -webkit-text-stroke 0.15s ease;
+    -webkit-text-stroke: 0px transparent;
+    /* prevents jump */
+}
+
+.title-samarkan .hoverable-char:hover {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
+}
+
+.title-kn-hero .hoverable-char:hover {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+}
+
 
 .hero-bottom {
     display: flex;

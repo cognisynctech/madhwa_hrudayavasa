@@ -6,6 +6,7 @@ import easyVideo from '../assets/videos/easy.mp4'
 import mulaImg from '../assets/pics/mula.jpeg'
 import { podcasts } from '../data/podcasts'
 import KrishnaShader from '../components/KrishnaShader'
+import HeroParticles from '../components/HeroParticles'
 import './Home.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -27,6 +28,7 @@ const pillars = [
 function HeroSection() {
     const heroRef = useRef(null)
     const textRef = useRef(null)
+    const heroLeftRef = useRef(null)  // particle canvas target
 
     // Scroll-shrink on hero text
     useEffect(() => {
@@ -49,11 +51,20 @@ function HeroSection() {
 
     return (
         <section ref={heroRef} className="hero">
-            {/* LEFT — 70% text column */}
-            <div className="hero-left">
+            {/* LEFT — text column */}
+            <div className="hero-left" ref={heroLeftRef}>
+                <HeroParticles containerRef={heroLeftRef} />
                 <div ref={textRef} className="hero-text-wrap">
                     <h1 className="hero-title anim-fadein">
-                        Madhwa<br />Hrudaya<br />Vaasi
+                        <span className="title-samarkan">
+                            {'Madhwa'.split('').map((c, i) => <span key={i} className="hoverable-char">{c}</span>)}
+                        </span>
+                        <span className="title-kn-hero">
+                            <span className="hoverable-char">ಹೃದಯ</span>
+                        </span>
+                        <span className="title-samarkan title-vaasa">
+                            {'Vaasa'.split('').map((c, i) => <span key={i} className="hoverable-char">{c}</span>)}
+                        </span>
                     </h1>
                 </div>
                 <div className="hero-bottom">
