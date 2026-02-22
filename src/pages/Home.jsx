@@ -53,7 +53,7 @@ function HeroSection() {
             <div className="hero-left">
                 <div ref={textRef} className="hero-text-wrap">
                     <h1 className="hero-title anim-fadein">
-                        ಮಧ್ವ<br />ಹೃದಯ<br />ವಾಸಿ
+                        Madhwa<br />Hrudaya<br />Vaasi
                     </h1>
                 </div>
                 <div className="hero-bottom">

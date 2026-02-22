@@ -2,6 +2,13 @@
    GLOBAL CSS — REJOUICE STYLE
    ========================== */
 
+@font-face {
+  font-family: 'Samarkan';
+  src: url('./assets/fonts/SAMAN___.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {
@@ -19,6 +26,7 @@
 
   --font: 'Space Grotesk', system-ui, sans-serif;
   --font-kn: 'Noto Serif Kannada', serif;
+  --font-samarkan: 'Samarkan', serif;
 
   --fs-hero: clamp(5rem, 18.5vw, 22rem);
   --fs-xl: clamp(2.4rem, 6vw, 7rem);

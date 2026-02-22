@@ -36,13 +36,16 @@
 }
 
 .hero-title {
-    font-family: var(--font-kn);
-    font-size: clamp(2.8rem, 7vw, 8.5rem);
-    font-weight: 900;
-    line-height: 0.9;
-    letter-spacing: -0.025em;
+    font-family: var(--font-samarkan), var(--font);
+    font-size: clamp(3rem, 11vw, 13rem);
+    font-weight: 400;
+    /* Samarkan is naturally bold */
+    line-height: 0.95;
+    letter-spacing: 0.02em;
     color: var(--fg);
     will-change: transform;
+    margin-bottom: 2rem;
+    padding-top: 1rem;
 }
 
 .hero-bottom {
