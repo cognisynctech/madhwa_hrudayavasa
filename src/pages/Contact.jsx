@@ -1,136 +1,157 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './Contact.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const teamImages = import.meta.glob('../assets/team/*.{jpg,jpeg,png,webp}', { eager: true })
+
+function getTeamPhoto(name, photoSlug) {
+    const slug = (photoSlug || name).toLowerCase().replaceAll(' ', '')
+    const key = Object.keys(teamImages).find((k) => {
+        const fn = k.split('/').pop().split('.')[0].toLowerCase().replaceAll(/[\s_-]+/g, '')
+        return fn === slug || slug.includes(fn) || fn.includes(slug)
+    })
+    return key ? teamImages[key].default : null
+}
+
+function getInitials(name) {
+    return name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
 const team = [
-    {
-        id: 1,
-        name: 'Raghavendra Acharya',
-        role: 'Host & Founder',
-        bio: 'A Madhwa scholar who spent a decade studying the Ashta Matha tradition. Started this podcast to make Dwaita accessible to a new generation.',
-    },
-    {
-        id: 2,
-        name: 'Srinivasa Bhatta',
-        role: 'Co-Host & Producer',
-        bio: 'Passionate about Haridasa literature and the musical traditions of the Madhwa sampradaya. Handles production and brings scholarly depth to every episode.',
-    },
-    {
-        id: 3,
-        name: 'Vidya Prabha',
-        role: 'Research & Content',
-        bio: 'Background in Sanskrit and Vedic studies. Crafts the questions that drive conversations deeper — every episode\'s depth is her contribution.',
-    },
+    { name: 'Srinidhi' },
+    { name: 'Sarvottam' },
+    { name: 'Pranava',  photoSlug: 'anirudha' },
+    { name: 'Anirudha', photoSlug: 'pranava'  },
+    { name: 'Smriti' },
 ]
 
 export default function Contact() {
+    const pageRef = useRef(null)
+
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.utils.toArray('[data-reveal]').forEach((el) => {
                 gsap.fromTo(el,
-                    { opacity: 0, y: 30 },
+                    { opacity: 0, y: 36 },
                     {
                         opacity: 1, y: 0,
-                        duration: 0.8,
+                        duration: 0.9,
                         ease: 'power3.out',
                         scrollTrigger: { trigger: el, start: 'top 88%' },
                     }
                 )
             })
-        })
+        }, pageRef)
         return () => ctx.revert()
     }, [])
 
     return (
-        <main className="con">
+        <main className="con" ref={pageRef}>
 
-            {/* Title */}
-            <section className="con-header">
-                <div className="con-title-wrap">
-                    <h1 className="con-title anim-fadein">The People</h1>
+            {/* ── Hero ─────────────────────────────────────────── */}
+            <section className="con-hero">
+                <div className="con-hero-bg">
+                    <span className="con-hero-wm" aria-hidden="true">ಮಧ್ವ</span>
                 </div>
-                <div className="container">
-                    <div className="rule" />
+                <div className="container con-hero-inner">
+                    <div className="con-hero-top">
+                        <span className="con-hero-kicker">The People</span>
+                        <span className="con-hero-ep-count">{team.length} members</span>
+                    </div>
+                    <h1 className="con-hero-title anim-fadein">
+                        Voices behind<br />
+                        <em>the tradition.</em>
+                    </h1>
                 </div>
             </section>
 
-            {/* About - 2 col */}
+            {/* ── Team portraits ────────────────────────────────── */}
+            <section className="con-team">
+                <div className="container">
+                    <div className="con-team-grid">
+                        {team.map((m, i) => {
+                            const photo = getTeamPhoto(m.name, m.photoSlug)
+                            return (
+                                <div key={i} className="con-member" data-reveal style={{ '--i': i }}>
+                                    <div className="con-member-photo">
+                                        {photo ? (
+                                            <img src={photo} alt={m.name} />
+                                        ) : (
+                                            <div className="con-member-initials">
+                                                {getInitials(m.name)}
+                                            </div>
+                                        )}
+                                        <div className="con-member-overlay">
+                                            <span className="con-member-num">0{i + 1}</span>
+                                        </div>
+                                    </div>
+                                    <p className="con-member-name">{m.name}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <div className="container"><div className="rule" /></div>
+
+            {/* ── About ─────────────────────────────────────────── */}
             <section className="con-about" data-reveal>
                 <div className="container">
                     <div className="con-about-row">
                         <p className="con-about-label">About the podcast</p>
                         <div className="con-about-body">
                             <p>
-                                <strong>ಮಧ್ವ ಹೃದಯ ವಾಸಿ</strong> — "one who resides in the heart of Madhwa" —
-                                is a podcast dedicated to exploring Dwaita Vedanta, the philosophy of Sri Madhvacharya.
+                                <strong>ಮಧ್ವ ಹೃದಯ ವಾಸ</strong> — "one who resides in the heart of Madhwa" —
+                                is a podcast dedicated to exploring Dwaita Vedanta, the philosophy of
+                                Sri Madhvacharya.
                             </p>
                             <p>
-                                Through long-form conversations with Swamijis, pandit scholars, and practitioners,
-                                we explore the metaphysics, epistemology, devotional practices, and living traditions
-                                of Tattvavada.
+                                Through long-form conversations with Swamijis, pandit scholars, and
+                                practitioners, we explore the metaphysics, epistemology, devotional
+                                practices, and living traditions of Tattvavada.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Team */}
-            <section className="con-team">
-                <div className="container">
-                    <div className="rule" />
-                    <div className="con-team-header" data-reveal>
-                        <h2 className="con-team-heading">Team</h2>
-                    </div>
-                    <div className="rule" />
-                    {team.map((m, i) => (
-                        <div key={m.id} data-reveal>
-                            <div className="con-team-row">
-                                <span className="con-team-num">0{i + 1}</span>
-                                <div className="con-team-info">
-                                    <p className="con-team-name">{m.name}</p>
-                                    <p className="con-team-role">{m.role}</p>
-                                </div>
-                                <p className="con-team-bio">{m.bio}</p>
-                            </div>
-                            <div className="rule" />
-                        </div>
-                    ))}
-                </div>
-            </section>
+            <div className="container"><div className="rule" /></div>
 
-            {/* Contact CTA */}
+            {/* ── CTA + Socials ─────────────────────────────────── */}
             <section className="con-cta" data-reveal>
                 <div className="container">
-                    <div className="rule" />
                     <div className="con-cta-inner">
-                        <h2 className="con-cta-heading">Let's talk.</h2>
+                        <div className="con-cta-left">
+                            <span className="con-cta-eyebrow">Get in touch</span>
+                            <h2 className="con-cta-heading">Let's<br />talk.</h2>
+                        </div>
                         <div className="con-cta-right">
                             <p className="con-cta-sub">
                                 Interested in being a guest? Have an episode suggestion?
-                                Or just want to connect?
+                                Or just want to connect with the team?
                             </p>
-                            <a href="mailto:madhwahrudayavaasi@gmail.com" className="con-cta-btn">
-                                madhwahrudayavaasi@gmail.com ↗
+                            <a href="mailto:madhwahrudayavasa@gmail.com" className="con-cta-btn">
+                                <span>madhwahrudayavasa@gmail.com</span>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" strokeWidth="2.5">
+                                    <path d="M7 17L17 7M7 7h10v10" />
+                                </svg>
                             </a>
+                            <div className="con-social-row">
+                                <a href="https://www.youtube.com/@Madhwahrudayavasa" target="_blank"
+                                   rel="noopener noreferrer" className="con-social-link">
+                                    YouTube ↗
+                                </a>
+                                <a href="https://www.instagram.com/madhwahrudayavasa/" target="_blank"
+                                   rel="noopener noreferrer" className="con-social-link">
+                                    Instagram ↗
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div className="rule" />
-                </div>
-            </section>
-
-            {/* Social */}
-            <section className="con-social" data-reveal>
-                <div className="container">
-                    <div className="con-social-row">
-                        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="con-social-link">
-                            YouTube ↗
-                        </a>
-                        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="con-social-link">
-                            Instagram ↗
-                        </a>
                     </div>
                 </div>
             </section>

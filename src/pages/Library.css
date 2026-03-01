@@ -1,150 +1,756 @@
+﻿/* =====================================================
+   LIBRARY — Visual Magazine Grid
+   Thumbnail-first. Film-poster hero. Slide-up overlays.
+===================================================== */
+
 .lib {
-    padding-top: 4rem;
+    padding-top: 0;
+    background: var(--bg);
 }
 
+/* ── Header — compact single-line bar ───────────────── */
 .lib-header {
-    padding-bottom: 0;
+    padding: 1.4rem 0 1.2rem;
 }
 
-/* Big title clip — same as hero */
-.lib-title-wrap {
-    overflow: hidden;
-    padding: clamp(3rem, 6vw, 5.5rem) var(--pad) clamp(1rem, 2vw, 2rem);
+.lib-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .lib-title {
-    font-size: clamp(4rem, 12vw, 14rem);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
     font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 0.9;
+    letter-spacing: -0.02em;
+    line-height: 1;
     color: var(--fg);
 }
 
-/* Controls: search + filters */
-.lib-controls {
+.lib-header-side {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    padding: 1.5rem 0;
+    gap: 1.4rem;
 }
 
-.lib-search {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+.lib-sub {
+    font-size: var(--fs-xs);
+    color: var(--fg-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.lib-channel {
+    font-size: var(--fs-xs);
+    color: var(--fg-dim);
+    letter-spacing: 0.08em;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 6px;
+    padding-bottom: 2px;
+    transition: color 0.25s, border-color 0.25s;
 }
 
-.lib-search svg {
-    color: var(--fg-dim)
+.lib-channel:hover {
+    color: var(--fg);
+    border-color: var(--fg);
 }
 
-.lib-search-input {
+/* ── Hero — split layout (dark left + image right) ──── */
+.lib-hero {
+    padding: 0;
+}
+
+.lib-hero-card {
+    display: grid;
+    grid-template-columns: 1fr 1.45fr;
+    height: clamp(420px, 50vw, 640px);
+    overflow: hidden;
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--fg);
+}
+
+/* Left — solid dark typography panel */
+.lib-hero-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* top padding accounts for fixed navbar (~80px) */
+    padding: calc(80px + clamp(1.5rem, 3vw, 2.5rem)) clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3.5rem);
+    gap: 0.75rem;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.lib-hero-tags {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.lib-hero-pill {
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 3px 9px;
+}
+
+.lib-hero-ep {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.lib-hero-sep {
+    color: var(--fg-dim);
+    font-size: 0.65rem;
+}
+
+.lib-hero-cat {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+}
+
+/* LIVE indicator — tiny pulsing dot when data is auto-synced from YouTube */
+.lib-hero-live-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    opacity: 0.7;
+    display: inline-block;
+    flex-shrink: 0;
+    animation: livePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50%       { opacity: 0.2; transform: scale(0.6); }
+}
+
+.lib-hero-title {
+    font-size: clamp(1.4rem, 2.8vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--fg);
+    transition: letter-spacing 0.4s var(--ease);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lib-hero-card:hover .lib-hero-title {
+    letter-spacing: -0.01em;
+}
+
+.lib-hero-kn {
+    font-family: var(--font-kn);
+    font-size: clamp(0.8rem, 1.4vw, 1rem);
+    color: var(--fg-dim);
+    font-weight: 400;
+    opacity: 0.55;
+}
+
+.lib-hero-desc {
+    font-size: var(--fs-sm);
+    color: var(--fg-dim);
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lib-hero-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 0.2rem;
+}
+
+.lib-hero-dur {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--fg-dim);
+}
+
+.lib-hero-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg);
+    transition: gap 0.35s var(--ease);
+}
+
+.lib-hero-card:hover .lib-hero-cta { gap: 0.7rem; }
+
+/* Right — image panel */
+.lib-hero-media {
+    position: relative;
+    overflow: hidden;
+}
+
+.lib-hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    filter: brightness(0.82);
+    transition: transform 0.9s var(--ease), filter 0.5s;
+    display: block;
+}
+
+.lib-hero-card:hover .lib-hero-img {
+    transform: scale(1.04);
+    filter: brightness(1);
+}
+
+/* Play circle — center of image, on hover */
+.lib-hero-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(242, 240, 235, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg);
+    background: rgba(10, 10, 10, 0.45);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    scale: 0.72;
+    transition: opacity 0.38s, scale 0.38s var(--ease);
+    z-index: 2;
+}
+
+.lib-hero-card:hover .lib-hero-play {
+    opacity: 1;
+    scale: 1;
+}
+
+/* play overlay must never intercept pointer events on the link */
+.lib-hero-play {
+    pointer-events: none;
+}
+
+/* ── Hero Skeleton — shown while API is in-flight ────── */
+@keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+}
+
+.lib-hero-skeleton .lib-hero-body {
+    pointer-events: none;
+}
+
+.lib-skel {
+    border-radius: 3px;
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 600px 100%;
+    animation: shimmer 1.6s infinite linear;
+}
+
+.lib-skel--tags   { height: 14px; width: 40%; margin-bottom: 0.3rem; }
+.lib-skel--title  { height: clamp(28px, 4vw, 50px); width: 90%; }
+.lib-skel--title2 { width: 70%; margin-top: 0.4rem; }
+.lib-skel--desc   { height: 12px; width: 85%; margin-top: 0.5rem; }
+.lib-skel--media  {
+    background: rgba(255,255,255,0.04);
+    animation: shimmer 1.6s infinite linear;
+    background-size: 600px 100%;
+}
+
+/* ── Discovery — Awwwards search section ─────────────── */
+.lib-discovery {
+    padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.lib-discovery-label {
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    opacity: 0.5;
+    margin-bottom: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+/* Big search bar */
+.lib-search-field {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    border-bottom: 2px solid rgba(242, 240, 235, 0.25);
+    padding-bottom: clamp(0.8rem, 1.5vw, 1.2rem);
+    transition: border-color 0.35s var(--ease);
+    cursor: text;
+}
+
+.lib-search-field:focus-within {
+    border-color: var(--fg);
+}
+
+.lib-search-icon {
+    color: var(--fg-dim);
+    flex-shrink: 0;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.lib-search-field:focus-within .lib-search-icon {
+    opacity: 0.9;
+}
+
+.lib-main-search {
+    flex: 1;
     background: transparent;
     border: none;
     outline: none;
     color: var(--fg);
     font-family: var(--font);
-    font-size: var(--fs-sm);
-    width: 180px;
+    font-size: clamp(1.5rem, 3.5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    caret-color: var(--accent);
 }
 
-.lib-search-input::placeholder {
-    color: var(--fg-dim)
+.lib-main-search::placeholder {
+    color: var(--fg-dim);
+    opacity: 0.28;
+    font-weight: 400;
 }
 
-.lib-clear {
+.lib-clear-btn {
     background: none;
-    border: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
     color: var(--fg-dim);
     cursor: pointer;
-    font-size: 0.7rem;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.25s, border-color 0.25s, transform 0.25s var(--ease);
 }
 
-/* Filters */
+.lib-clear-btn:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+    transform: rotate(90deg);
+}
+
+/* Footer row: count + filters */
+.lib-discovery-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: clamp(1rem, 2vw, 1.8rem);
+}
+
+.lib-result-count {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.lib-result-num {
+    font-size: clamp(1.4rem, 2.8vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.lib-result-txt {
+    font-size: var(--fs-sm);
+    color: var(--fg-dim);
+    letter-spacing: 0.02em;
+}
+
+.lib-result-query {
+    font-size: var(--fs-sm);
+    color: var(--fg-dim);
+    opacity: 0.55;
+    font-style: italic;
+    letter-spacing: 0.01em;
+}
+
+/* ── Filter bar — borderless editorial style ────────── */
 .lib-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0;
 }
 
 .lib-filter {
     font-family: var(--font);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 4px 12px;
+    padding: 5px 14px;
     background: transparent;
-    color: var(--fg-dim);
-    border: 1px solid var(--border);
+    color: var(--fg);
+    border: none;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
+    opacity: 0.35;
+    transition: opacity 0.22s, border-color 0.22s;
 }
 
 .lib-filter:hover {
+    opacity: 0.75;
+}
+
+.lib-filter.active {
+    opacity: 1;
+    border-bottom-color: var(--fg);
+}
+
+/* ── Episode Grid ───────────────────────────────────── */
+.lib-grid-section {
+    padding: clamp(1rem, 2vw, 1.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.ep-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Card ────────────────────────────────────────────── */
+.ep-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--fg);
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1px solid rgba(242, 240, 235, 0.06);
+    overflow: hidden;
+    animation: cardIn 0.6s var(--ease) both;
+    animation-delay: calc(var(--i) * 0.04s);
+    transition: border-color 0.3s, transform 0.35s var(--ease);
+}
+
+.ep-card:hover {
+    border-color: rgba(242, 240, 235, 0.14);
+    transform: translateY(-3px);
+}
+
+/* Thumbnail wrapper */
+.ep-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #111;
+    flex-shrink: 0;
+}
+
+.ep-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.9);
+    transition: transform 0.55s var(--ease), filter 0.4s;
+    will-change: transform;
+    display: block;
+}
+
+.ep-card:hover .ep-card-thumb img {
+    transform: scale(1.05);
+    filter: brightness(0.75);
+}
+
+/* Play circle — center, on hover */
+.ep-card-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(242, 240, 235, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg);
+    background: rgba(10, 10, 10, 0.5);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    scale: 0.7;
+    transition: opacity 0.3s, scale 0.3s var(--ease);
+    z-index: 4;
+}
+
+.ep-card:hover .ep-card-play {
+    opacity: 1;
+    scale: 1;
+}
+
+/* Metadata below the thumbnail */
+.ep-card-body {
+    padding: 0.85rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    flex: 1;
+    transition: background 0.3s;
+}
+
+.ep-card-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.15rem;
+}
+
+.ep-card-ep {
+    font-size: 0.54rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: color 0.25s;
+}
+
+.ep-card-dur {
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--fg-dim);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.25s;
+}
+
+.ep-card-title {
+    font-size: clamp(0.82rem, 1.3vw, 1rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--fg);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.25s;
+}
+
+.ep-card:hover .ep-card-body {
+    background: #f2f0eb;
+    transition: background 0.3s;
+}
+
+.ep-card:hover .ep-card-title { color: #0a0a0a; }
+
+.ep-card:hover .ep-card-ep { color: #0a0a0a; }
+
+.ep-card:hover .ep-card-dur { color: rgba(10,10,10,0.5); }
+
+.ep-card:hover .ep-card-kn { color: rgba(10,10,10,0.4); opacity: 0.8; }
+
+.ep-card-kn {
+    font-family: var(--font-kn);
+    font-size: 0.66rem;
+    color: var(--fg-dim);
+    opacity: 0.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Pagination ─────────────────────────────────────────── */
+.lib-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: clamp(2rem, 4vw, 3.5rem) 0 clamp(1.5rem, 3vw, 2.5rem);
+    flex-wrap: wrap;
+}
+
+.lib-page-btn {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.55rem 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+    white-space: nowrap;
+}
+
+.lib-page-btn:hover:not(:disabled) {
     color: var(--fg);
     border-color: rgba(242, 240, 235, 0.3);
 }
 
-.lib-filter.active {
+.lib-page-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.lib-page-nums {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.lib-page-num {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--fg-dim);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.lib-page-num:hover:not(.active) {
+    color: var(--fg);
+    border-color: var(--border);
+}
+
+.lib-page-num.active {
     color: var(--bg);
     background: var(--fg);
     border-color: var(--fg);
+    font-weight: 700;
 }
 
-/* Grid */
-.lib-grid-section {
-    padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 8vw, 8rem);
+@media (max-width: 480px) {
+    .lib-page-nums { gap: 0.2rem; }
+    .lib-page-num { width: 30px; height: 30px; font-size: 0.65rem; }
+    .lib-page-btn { padding: 0.45rem 0.85rem; font-size: 0.65rem; }
 }
 
-.lib-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border: 1px solid var(--border);
-    gap: 1px;
-    background: var(--border);
+/* ── CTA ─────────────────────────────────────────────── */
+.lib-cta { padding: 0 0 clamp(2rem, 4vw, 4rem); }
+
+.lib-cta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 3vw, 3rem) 0;
 }
 
-.lib-grid>* {
-    background: var(--bg);
+.lib-cta-text { font-size: var(--fs-sm); color: var(--fg-dim); }
+
+.lib-cta-link {
+    font-size: var(--fs-sm);
+    color: var(--fg);
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 2px;
+    transition: opacity 0.25s;
 }
 
-@media (max-width: 900px) {
-    .lib-grid {
-        grid-template-columns: repeat(2, 1fr)
-    }
-}
+.lib-cta-link:hover { opacity: 0.5; }
 
-@media (max-width: 580px) {
-    .lib-grid {
-        grid-template-columns: 1fr
-    }
-}
-
-/* Empty state */
+/* ── Empty ───────────────────────────────────────────── */
 .lib-empty {
-    padding: 6rem 0;
+    padding: 5rem 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.2rem;
     align-items: flex-start;
 }
 
-.lib-empty p {
-    color: var(--fg-dim);
-    font-size: var(--fs-sm);
-}
+.lib-empty p { color: var(--fg-dim); font-size: var(--fs-sm); }
 
 .lib-empty button {
     font-family: var(--font);
     font-size: var(--fs-xs);
     color: var(--fg);
     background: none;
+    border: none;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
     padding-bottom: 3px;
     letter-spacing: 0.04em;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 768px) {
+    .lib-header-inner { flex-wrap: wrap; gap: 0.8rem; }
+    .lib-header-side  { gap: 0.8rem; }
+    .lib-discovery-footer { flex-direction: column; align-items: flex-start; }
+
+    .lib-hero-card {
+        grid-template-columns: 1fr;
+        height: auto;           /* remove fixed height — let stacked content breathe */
+    }
+
+    .lib-hero-body {
+        order: 2;
+        /* reduce top padding — image above already pushes content down */
+        padding-top: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .lib-hero-media {
+        order: 1;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .ep-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+    .ep-grid { grid-template-columns: 1fr; }
+    .lib-main-search { font-size: 1.3rem; }
 }

@@ -1,0 +1,88 @@
+/* ══════════════════════════
+   VIDEO MODAL — Cinematic fullscreen overlay
+══════════════════════════ */
+.vmodal {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+}
+
+/* ─── Letterbox bars ─── */
+.vmodal-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 12vh;
+    background: #000;
+    z-index: 9002;
+    pointer-events: none;
+}
+
+.vmodal-bar--top {
+    top: 0;
+    transform-origin: top center;
+}
+
+.vmodal-bar--bottom {
+    bottom: 0;
+    transform-origin: bottom center;
+}
+
+/* ─── Video container — clip-path animated by GSAP ─── */
+.vmodal-wrap {
+    width: 88vw;
+    max-width: 1400px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
+    transform-origin: center center;
+    position: relative;
+    z-index: 9001;
+}
+
+.vmodal-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+}
+
+/* ─── Close badge — follows cursor ─── */
+.vmodal-close-badge {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.3rem;
+    border-radius: 100px;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 9003;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: opacity 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .vmodal-wrap {
+        width: 96vw;
+    }
+    .vmodal-close-badge {
+        display: none;
+    }
+    .vmodal-bar {
+        height: 8vh;
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "madhwa-backend",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Backend video-fetch server for Madhwa Hrudaya Vaasa",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

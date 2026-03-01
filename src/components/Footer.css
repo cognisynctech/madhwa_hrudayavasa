@@ -1,4 +1,4 @@
-/* ══════════════════════
+﻿/* ══════════════════════
    FOOTER — veil reveal
 ══════════════════════ */
 
@@ -7,10 +7,19 @@
     background: var(--bg);
     color: var(--fg);
     overflow: hidden;
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
 }
+
+/* Dark-page variant: accent top stripe + initial hidden state */
+.footer--dark-reveal {
+    border-top: 1px solid var(--border);
+}
+
+/* GSAP's fromTo owns the initial opacity:0 state inline — no CSS pre-hide here,
+   so elements are always visible (opacity:1) as a CSS baseline.
+   This prevents footer from going invisible when GSAP cleanup removes inline styles. */
 
 /* White veil that scrolls upward to reveal footer */
 .footer-veil {
@@ -31,26 +40,51 @@
     flex: 1;
 }
 
+/* ── Brand row (logo + name) ── */
+.footer-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1.2rem;
+}
+
+.footer-brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--border);
+}
+
+.footer-brand-name {
+    font-family: var(--font-samarkan), serif;
+    font-size: 1.1rem;
+    color: var(--fg);
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+}
+
+.footer-brand-sub {
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-top: 0.15rem;
+}
+
 /* ── Top info row ── */
 .footer-top {
     display: grid;
     grid-template-columns: 1.6fr 1fr 0.8fr;
     gap: clamp(2rem, 6vw, 8rem);
-    padding-top: clamp(3rem, 6vw, 7rem);
-    padding-bottom: clamp(2rem, 4vw, 5rem);
+    padding-top: clamp(2.5rem, 4vw, 4.5rem);
+    padding-bottom: clamp(1.5rem, 3vw, 3rem);
     border-bottom: 1px solid var(--border);
 }
 
-.footer-tagline {
-    font-size: clamp(1rem, 1.8vw, 1.5rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-}
-
 .footer-contact-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--fg-dim);
     margin-bottom: 0.4rem;
@@ -63,16 +97,16 @@
     text-underline-offset: 3px;
     transition: opacity 0.25s;
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
 }
 
 .footer-email:hover {
-    opacity: 0.55
+    opacity: 0.55;
 }
 
 .footer-nl-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.06em;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--fg-dim);
     margin-bottom: 0.6rem;
@@ -96,7 +130,7 @@
 }
 
 .footer-nl-input::placeholder {
-    color: var(--fg-dim)
+    color: var(--fg-dim);
 }
 
 .footer-nl-btn {
@@ -110,29 +144,38 @@
 }
 
 .footer-nl-btn:hover {
-    transform: translateX(4px)
+    transform: translateX(4px);
 }
 
 /* Nav columns */
 .footer-nav-cols {
     display: flex;
-    gap: clamp(1.5rem, 4vw, 5rem);
+    gap: clamp(2rem, 5vw, 6rem);
 }
 
 .footer-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.6rem;
+}
+
+.footer-nav-heading {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 0.4rem;
 }
 
 .footer-nav a {
     font-size: clamp(0.78rem, 1.1vw, 0.95rem);
-    color: var(--fg-dim);
+    color: rgba(242, 240, 235, 0.55);
     transition: color 0.2s;
 }
 
 .footer-nav a:hover {
-    color: var(--fg)
+    color: var(--fg);
 }
 
 /* Meta */
@@ -140,66 +183,147 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: flex-end
+    align-items: flex-end;
 }
 
 .footer-location {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--fg-dim);
-    letter-spacing: 0.03em
+    letter-spacing: 0.04em;
 }
 
 .footer-legal {
     display: flex;
     gap: 1.5rem;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--fg-dim);
-    letter-spacing: 0.04em
+    letter-spacing: 0.05em;
 }
 
-/* ── Wordmark at bottom — huge brand name ── */
+/* ── Wordmark at bottom — huge multi-font brand ── */
 .footer-wordmark {
-    flex: 1;
     display: flex;
     align-items: flex-end;
+    justify-content: center;
+    gap: clamp(0.6rem, 1.5vw, 2rem);
     overflow: hidden;
-    padding: 0;
+    padding: clamp(2rem, 4vw, 4rem) var(--pad) clamp(1rem, 2vw, 2rem);
     line-height: 0.82;
 }
 
-.footer-wm-kn {
-    font-family: var(--font-kn);
-    /* Viewport-filling text */
-    font-size: clamp(4rem, 14vw, 18rem);
-    font-weight: 900;
-    letter-spacing: -0.04em;
+.footer-wm-en {
+    font-family: var(--font-samarkan), serif;
+    font-size: clamp(3.5rem, 10vw, 11rem);
+    font-weight: 400;
+    letter-spacing: 0.01em;
     color: var(--fg);
     white-space: nowrap;
     user-select: none;
-    /* Slight dim to feel etched into the footer */
-    opacity: 0.92;
+    opacity: 0.88;
+    line-height: 0.82;
+}
+
+.footer-wm-en--dim {
+    opacity: 0.35;
+}
+
+.footer-wm-kn {
+    font-family: var(--font-bengaluru), serif;
+    font-size: clamp(2.5rem, 7.5vw, 8.5rem);
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    user-select: none;
+    opacity: 0.7;
     line-height: 0.85;
-    padding: 0 var(--pad) 0;
+    align-self: flex-end;
+}
+
+/* ── Credit line ── */
+.footer-credit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: clamp(1rem, 2.5vw, 1.5rem) var(--pad);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--fg-dim);
+    border-top: 1px solid var(--border);
+}
+
+.footer-credit a {
+    font-size: 0.82rem;
+}
+
+.footer-credit a {
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.25s;
+}
+
+.footer-credit a:hover {
+    opacity: 0.55;
 }
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .footer-top {
         grid-template-columns: 1fr 1fr;
+        gap: clamp(1.5rem, 4vw, 3rem);
     }
 
     .footer-meta {
         align-items: flex-start;
-        grid-column: span 2
+        grid-column: span 2;
+    }
+
+    .footer-wordmark {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
     }
 }
 
 @media (max-width: 600px) {
     .footer-top {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding-top: clamp(2rem, 6vw, 3rem);
+        padding-bottom: clamp(1rem, 4vw, 2rem);
     }
 
     .footer-meta {
-        align-items: flex-start
+        align-items: flex-start;
+        grid-column: unset;
+    }
+
+    /* Nav columns side-by-side on phone (they're short lists) */
+    .footer-nav-cols {
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .footer-wm-en {
+        font-size: clamp(2.8rem, 18vw, 5.5rem);
+    }
+
+    .footer-wm-kn {
+        font-size: clamp(2rem, 14vw, 4.5rem);
+    }
+
+    .footer-wordmark {
+        padding-top: clamp(1.5rem, 6vw, 3rem);
+        padding-bottom: clamp(1rem, 4vw, 2rem);
+    }
+
+    .footer-email {
+        font-size: 0.85rem;
+        word-break: break-all;
+    }
+
+    .footer-nl-form {
+        max-width: 100%;
     }
 }

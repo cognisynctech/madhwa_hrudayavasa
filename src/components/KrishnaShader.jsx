@@ -266,17 +266,35 @@ export default function KrishnaShader() {
 
     const atlasTex = useMemo(() => buildAtlasTex(), [])
 
-    // Load portrait, capture natural aspect ratio → triggers re-render of ShaderPlane
-    const portraitTex = useMemo(() => {
+    // Load portrait texture — state updates happen in useEffect to avoid
+    // "setState before mount" warning from React
+    const portraitTexRef = useRef(null)
+    if (!portraitTexRef.current) {
         const loader = new THREE.TextureLoader()
-        const t = loader.load('/kisnu.png', (tex) => {
+        const t = loader.load('/kisnu.png')
+        t.minFilter = t.magFilter = THREE.LinearFilter
+        portraitTexRef.current = t
+    }
+    const portraitTex = portraitTexRef.current
+
+    useEffect(() => {
+        const tex = portraitTexRef.current
+        if (!tex) return
+        // If image already loaded synchronously (cached)
+        if (tex.image) {
+            setImgAspect(tex.image.naturalWidth / tex.image.naturalHeight)
+            setIsLoaded(true)
+            return
+        }
+        // Otherwise poll until load completes (TextureLoader doesn't expose a promise)
+        const id = setInterval(() => {
             if (tex.image) {
                 setImgAspect(tex.image.naturalWidth / tex.image.naturalHeight)
                 setIsLoaded(true)
+                clearInterval(id)
             }
-        })
-        t.minFilter = t.magFilter = THREE.LinearFilter
-        return t
+        }, 50)
+        return () => clearInterval(id)
     }, [])
 
     useEffect(() => {

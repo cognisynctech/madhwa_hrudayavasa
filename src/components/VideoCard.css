@@ -1,9 +1,9 @@
+/* ── Base card ──────────────────────────────────────────── */
 .vcard {
     display: flex;
     flex-direction: column;
     background: var(--bg);
     cursor: pointer;
-    border-right: 1px solid var(--border);
     transition: background 0.3s ease;
 }
 
@@ -11,7 +11,7 @@
     background: #111;
 }
 
-/* Thumbnail */
+/* ── Thumbnail wrapper ─────────────────────────────────── */
 .vcard-thumb {
     position: relative;
     width: 100%;
@@ -24,7 +24,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s var(--ease);
+    transition: transform 0.6s var(--ease), opacity 0.3s ease;
     filter: brightness(0.85);
 }
 
@@ -33,7 +33,18 @@
     filter: brightness(1);
 }
 
-/* Play button */
+/* ── YouTube iframe preview (shown on hover) ───────────── */
+.vcard-preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;          /* click passthrough to article */
+    z-index: 2;
+}
+
+/* ── Play overlay ──────────────────────────────────────── */
 .vcard-play {
     position: absolute;
     inset: 0;
@@ -42,14 +53,16 @@
     justify-content: center;
     opacity: 0;
     transition: opacity 0.3s ease;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.35);
     color: var(--fg);
+    z-index: 1;
 }
 
 .vcard:hover .vcard-play {
     opacity: 1;
 }
 
+/* ── Duration badge ────────────────────────────────────── */
 .vcard-duration {
     position: absolute;
     bottom: 10px;
@@ -60,14 +73,15 @@
     color: var(--fg);
     background: rgba(0, 0, 0, 0.7);
     padding: 2px 7px;
+    z-index: 3;
 }
 
-/* Info */
+/* ── Info panel ────────────────────────────────────────── */
 .vcard-info {
     padding: 1.2rem 1.4rem 1.6rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
     border-top: 1px solid var(--border);
 }
 
@@ -94,17 +108,80 @@
     opacity: 0.6;
 }
 
-.vcard-title-kn {
-    font-family: var(--font-kn);
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.25;
+.vcard-title-en {
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--fg);
-    margin-top: 0.2rem;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
 }
 
-.vcard-title-en {
-    font-size: 0.75rem;
+.vcard-title-kn {
+    font-family: var(--font-kn);
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.25;
     color: var(--fg-dim);
-    letter-spacing: 0.01em;
+}
+
+.vcard-desc {
+    font-size: 0.72rem;
+    color: var(--fg-dim);
+    opacity: 0.7;
+    line-height: 1.5;
+    margin-top: 0.3rem;
+}
+
+/* ── Featured variant ──────────────────────────────────── */
+.vcard--featured {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    border-bottom: 1px solid var(--border);
+}
+
+.vcard--featured .vcard-thumb {
+    flex: 1.4;
+    aspect-ratio: auto;
+    min-height: 380px;
+}
+
+.vcard--featured .vcard-info {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    border-top: none;
+    border-left: 1px solid var(--border);
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.vcard--featured .vcard-title-en {
+    font-size: 1.5rem;
+    line-height: 1.2;
+}
+
+.vcard--featured .vcard-title-kn {
+    font-size: 1.1rem;
+}
+
+.vcard--featured .vcard-desc {
+    font-size: 0.78rem;
+}
+
+.vcard--featured .vcard-ep,
+.vcard--featured .vcard-cat {
+    font-size: 0.7rem;
+}
+
+@media (max-width: 900px) {
+    .vcard--featured {
+        flex-direction: column;
+    }
+    .vcard--featured .vcard-thumb {
+        min-height: 240px;
+    }
+    .vcard--featured .vcard-info {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding: 1.5rem;
+    }
 }

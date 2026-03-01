@@ -11,10 +11,11 @@
 .hero {
     position: relative;
     width: 100%;
-    height: 85vh;
+    height: 100vh;
     display: flex;
     background: var(--bg);
     overflow: hidden;
+    z-index: 1;
 }
 
 /* Left 70% — text */
@@ -30,91 +31,126 @@
 .hero-text-wrap {
     flex: 1;
     display: flex;
-    align-items: flex-start;
-    padding: clamp(5rem, 9vw, 8rem) var(--pad) 0;
-    transform-origin: top left;
+    align-items: center;
+    padding: 0 var(--pad);
 }
 
+/* ─── Hero Title Stack for Mask Effect ─── */
 .hero-title {
+    display: grid;
+    grid-template-areas: "stack";
+    margin-bottom: 0;
+    position: relative;
+    overflow: visible;
+}
+
+/* Both layers occupy the same grid cell */
+.hero-layer {
+    grid-area: stack;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    will-change: transform;
     gap: 0;
-    margin-bottom: 1.5rem;
+    will-change: mask-image, -webkit-mask-image;
+    pointer-events: none;
 }
 
-/* MADHWA + VAASA — Samarkan pseudo-Devanagari */
+/* Default H-char reset */
+.h-char {
+    display: inline-block;
+}
+
+/* MADHWA + VAASA — Samarkan font */
 .title-samarkan {
     font-family: var(--font-samarkan), serif;
-    font-size: clamp(3.5rem, 10vw, 11rem);
+    font-size: clamp(3rem, 9vw, 9.5rem);
     font-weight: 400;
-    line-height: 0.88;
+    line-height: 0.82;
     letter-spacing: 0.01em;
-    color: var(--fg);
     display: block;
+    padding: 0;
 }
 
-/* ಹೃದಯ — Bengaluru SquareBold Kannada, copper accent, centered centerpiece */
+/* ಹೃದಯ — Bengaluru SquareBold Kannada */
 .title-kn-hero {
     font-family: var(--font-bengaluru);
-    font-size: clamp(2.8rem, 7.5vw, 8.5rem);
+    font-size: clamp(2.4rem, 6.5vw, 7rem);
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 0.9;
     letter-spacing: normal;
-    /* Fixes Kannada syllables disconnecting */
-    color: var(--accent);
     display: block;
     align-self: flex-start;
-    /* left-aligned, matching MADHWA and VAASA */
     text-align: left;
-    margin-top: 0.02em;
-    margin-bottom: -0.15em;
-    /* pull VAASA up, closing the gap */
-    opacity: 0.95;
+    margin-top: clamp(0.3rem, 0.8vw, 0.8rem);
+    padding: 0;
 }
 
-/* VAASA — same font as MADHWA */
 .title-vaasa {
     opacity: 1;
+    margin-top: clamp(0.2rem, 0.5vw, 0.6rem);
 }
 
-/* ─── Hoverable Text Effect ─── */
-.hoverable-char {
-    display: inline-block;
-    transition: color 0.15s ease, -webkit-text-stroke 0.15s ease;
-    -webkit-text-stroke: 0px transparent;
-    /* prevents jump */
-}
-
-.title-samarkan .hoverable-char:hover {
+/* ─── Bottom Layer: The "Reveal" (Outline) ─── */
+.hero-layer--outline .title-samarkan .h-char {
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
 }
 
-.title-kn-hero .hoverable-char:hover {
+.hero-layer--outline .title-kn-hero .h-char {
     color: transparent;
     -webkit-text-stroke: 2px var(--accent);
 }
 
+/* ─── Top Layer: The "Default" (Solid) ─── */
+/* This layer sits on top — JS sets mask-image directly for cross-browser reliability */
+.hero-layer--solid {
+    z-index: 2;
+    /* mask-image is set inline by JS on mousemove */
+}
+
+.hero-layer--solid .title-samarkan .h-char {
+    color: var(--fg);
+    -webkit-text-stroke: 0;
+}
+
+.hero-layer--solid .title-kn-hero .h-char {
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+}
+
+/* Ensure layers align — no extra padding */
+.title-samarkan,
+.title-kn-hero {
+    padding: 0;
+    /* opacity starts at 1 — splash screen covers these during initial load.
+       GSAP animates them on first entrance; SPA navigation back shows them instantly. */
+}
 
 .hero-bottom {
     display: flex;
-    align-items: flex-end;
-    gap: 3rem;
-    padding: 0 var(--pad) clamp(2rem, 4vw, 3.5rem);
+    align-items: center;
+    gap: 2rem;
+    padding: 0 var(--pad) clamp(1.8rem, 3.5vw, 3rem);
+}
+
+.hero-bottom .hero-rule {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+    flex-shrink: 0;
 }
 
 .hero-col {
-    font-size: var(--fs-sm);
-    line-height: 1.6;
+    font-size: 0.72rem;
+    line-height: 1.55;
     color: var(--fg-dim);
-    max-width: 200px;
+    max-width: 180px;
+    letter-spacing: 0.02em;
 }
 
 .hero-arrow {
     margin-left: auto;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--fg-dim);
     animation: arrowBounce 2s ease-in-out infinite;
 }
@@ -142,6 +178,7 @@
     height: 100%;
     overflow: hidden;
     z-index: 1;
+    opacity: 0;              /* hidden until loaded — GSAP fades in */
 }
 
 /* R3F Canvas wrapper fills the slot */
@@ -166,6 +203,37 @@
     z-index: 3;
 }
 
+/* ─── Socials — vertical strip on right edge ─── */
+.hero-socials {
+    position: absolute;
+    right: clamp(1rem, 2.5vw, 2.2rem);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4rem;
+    z-index: 10;
+}
+
+.hero-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(242, 240, 235, 0.3);
+    transition: color 0.3s ease, transform 0.3s ease;
+    padding: 0.35rem;
+}
+
+.hero-social-link:hover {
+    color: var(--accent);
+    transform: scale(1.15);
+}
+
+.hero-social-link svg {
+    display: block;
+}
+
 @media (max-width: 768px) {
     .hero {
         flex-direction: column
@@ -179,17 +247,53 @@
         width: 100%;
         height: 30vh
     }
+
+    .hero-socials {
+        position: absolute;
+        right: auto;
+        left: var(--pad);
+        top: auto;
+        bottom: clamp(5rem, 10vw, 7rem);
+        transform: none;
+        flex-direction: row;
+        writing-mode: horizontal-tb;
+    }
+
+    .hero-social-link {
+        writing-mode: horizontal-tb;
+        padding: 0.2rem;
+    }
 }
 
 /* ──────────────────────────
-   SHOWREEL
+   SHOWREEL — veil-reveal (like footer)
 ────────────────────────── */
+
+/* Wrapper — provides scroll room */
+.showreel-track {
+    position: relative;
+    height: auto;
+    margin-top: 0;
+    z-index: 5;
+}
+
+/* The video section */
 .showreel {
     position: relative;
     width: 100%;
-    height: 80vh;
+    height: 100vh;
     overflow: hidden;
     cursor: none;
+}
+
+/* Dark veil that slides UP like the footer veil — reveals video beneath */
+.showreel-veil {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 6;
+    transform-origin: top center;
+    pointer-events: none;
 }
 
 .showreel-video {
@@ -198,25 +302,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1);
-    /* Flips the video horizontally to fix selfie-camera mirroring */
-}
-
-.showreel-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: clamp(1.5rem, 4vw, 3.5rem);
-    font-weight: 300;
-    color: var(--fg);
-    pointer-events: none;
-    transition: opacity 0.35s ease;
-    letter-spacing: -0.01em;
-}
-
-.showreel.hovered .showreel-label {
-    opacity: 0
+    z-index: 1;
 }
 
 .showreel-badge {
@@ -243,7 +329,7 @@
 
 .showreel.hovered .showreel-badge {
     opacity: 1;
-    scale: 1
+    scale: 1;
 }
 
 /* ──────────────────────────
@@ -486,6 +572,35 @@
     display: block
 }
 
+/* ─── Play badge — follows cursor on highlight cards ─── */
+.hl-play-badge {
+    position: absolute;
+    /* sits visibly above the cursor — 4.4rem above centre */
+    transform: translate(-50%, calc(-50% - 4.4rem));
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.1rem;
+    border-radius: 100px;
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.5;
+    transition: opacity 0.25s ease, scale 0.32s var(--ease);
+    white-space: nowrap;
+    z-index: 25;
+}
+
+.hl-card.hovered .hl-play-badge {
+    opacity: 1;
+    scale: 1;
+}
+
 /* ──────────────────────────
    QUOTE BAR — dark→white bridge
 ────────────────────────── */
@@ -636,21 +751,25 @@
 }
 
 .ep-tile--tall .ep-tile-img {
-    height: clamp(280px, 32vw, 420px)
+    aspect-ratio: 3 / 4;
+    height: auto;
 }
 
 .ep-tile--wide .ep-tile-img {
-    height: clamp(180px, 18vw, 240px)
+    aspect-ratio: 16 / 9;
+    height: auto;
 }
 
 .ep-tile--square .ep-tile-img {
-    height: clamp(220px, 22vw, 300px)
+    aspect-ratio: 4 / 3;
+    height: auto;
 }
 
 .ep-tile-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
     display: block;
     transition: transform 0.5s var(--ease);
     filter: grayscale(10%);
@@ -812,6 +931,112 @@
 }
 
 /* ──────────────────────────
+   TEAM STRIP
+────────────────────────── */
+.team-strip {
+    background: #f2f0eb;
+    padding: clamp(4rem, 7vw, 7rem) 0 0;
+}
+
+.team-strip-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.team-strip-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(10,10,10,0.35);
+}
+
+.team-strip-faces {
+    display: flex;
+    gap: clamp(1.5rem, 3.5vw, 3.5rem);
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.team-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+.team-face:hover { transform: translateY(-5px); }
+
+.team-face-img {
+    width: clamp(80px, 11vw, 130px);
+    height: clamp(80px, 11vw, 130px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: #d0cdc7;
+    border: 2px solid rgba(10,10,10,0.06);
+    flex-shrink: 0;
+    transition: border-color 0.35s, box-shadow 0.35s;
+}
+
+.team-face:hover .team-face-img {
+    border-color: rgba(10,10,10,0.2);
+    box-shadow: 0 8px 28px rgba(10,10,10,0.12);
+}
+
+.team-face-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.team-face-init {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: rgba(10,10,10,0.4);
+}
+
+.team-face-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #1a1a1a;
+}
+
+.team-face-role {
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(10,10,10,0.4);
+    margin-top: -0.4rem;
+}
+
+.team-strip-cta {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    opacity: 0.45;
+    border-bottom: 1px solid rgba(10,10,10,0.2);
+    padding-bottom: 2px;
+    transition: opacity 0.25s;
+}
+
+.team-strip-cta:hover { opacity: 1; }
+
+/* ──────────────────────────
    CTA — text-swap hover (FIXED)
 ────────────────────────── */
 .cta-section {
@@ -866,4 +1091,119 @@
 
 .cta-link.hovered .cta-word--secondary {
     transform: translateY(0)
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE — comprehensive phone layout (≤ 768px, ≤ 480px)
+══════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    /* ── Hero ── */
+    .hero {
+        flex-direction: column;
+        height: auto;
+        min-height: 100svh;
+    }
+
+    .hero-left {
+        width: 100%;
+        position: relative;
+        z-index: 2;
+        /* no flex:1 — let content height define itself, shader will follow */
+    }
+
+    /* On mobile: shader sits BELOW hero text as a natural block */
+    .hero-right {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        height: 70vw;        /* taller → shows more of the figure */
+        min-height: 280px;
+        max-height: 520px;
+        flex-shrink: 0;
+    }
+
+    /* Fade overlay not needed when stacked vertically */
+    .hero-right-overlay { display: none; }
+
+    .hero-text-wrap {
+        flex: 0;             /* collapse stretchy space — title sits right above hero-bottom */
+        padding-top: clamp(5.5rem, 14vw, 7rem);
+        padding-bottom: 1.5rem;
+    }
+
+    /* hero-bottom: keep columns but tighten gap & push to bottom of text section */
+    .hero-bottom {
+        padding-top: 0;
+        padding-bottom: clamp(1.4rem, 4vw, 2.5rem);
+        gap: 0.8rem;
+    }
+
+    .hero-col { max-width: 210px; }
+
+    /* ── Showreel ── */
+    .showreel { height: 55vw; min-height: 280px; }
+
+    /* ── Highlights ── */
+    .hl-card--full { height: 65vw; min-height: 300px; }
+    .hl-split { grid-template-columns: 1fr; }
+    .hl-card--half { height: 60vw; min-height: 260px; }
+    .hl-preview { display: none; }
+
+    /* ── Episode ticker ── */
+    .ep-ticker-header { flex-direction: column; gap: 0.75rem; }
+
+    /* ── Video grow ── */
+    .video-grow-inner { aspect-ratio: 4 / 3; }
+
+    /* ── Team faces: bigger circles on mobile ── */
+    .team-face-img {
+        width: clamp(80px, 18vw, 110px);
+        height: clamp(80px, 18vw, 110px);
+    }
+}
+
+@media (max-width: 480px) {
+    /* ── Hero text tightening ── */
+    .title-samarkan {
+        font-size: clamp(2.6rem, 15vw, 4.5rem);
+    }
+
+    .title-kn-hero {
+        font-size: clamp(2rem, 12vw, 3.2rem);
+    }
+
+    .title-vaasa {
+        font-size: clamp(2.6rem, 15vw, 4.5rem);
+    }
+
+    /* Shader: keep generous height on small phones */
+    .hero-right {
+        height: 72vw;
+        min-height: 260px;
+        max-height: 420px;
+    }
+
+    /* Showreel: auto height on small phones */
+    .showreel { height: 70vw; }
+
+    /* Highlights: natural proportions */
+    .hl-card--full { height: 75vw; }
+    .hl-card--half { height: 70vw; }
+
+    /* Quote bar: smaller text */
+    .quote-text { font-size: clamp(1rem, 5.5vw, 1.5rem); }
+
+    /* Ep ticker header: smaller label */
+    .ep-ticker-label { font-size: clamp(1.5rem, 8vw, 3rem); }
+
+    /* Philosophy heading */
+    .philosophy-heading { font-size: clamp(2rem, 11vw, 4rem); }
+
+    /* CTA word smaller */
+    .cta-word { font-size: clamp(2.2rem, 12vw, 5rem); }
+
+    /* Hero socials: hide on tiny screens — doesn't fit */
+    .hero-socials { display: none; }
 }

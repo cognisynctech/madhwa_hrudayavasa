@@ -1,0 +1,84 @@
+/* ══════════════════════════
+   SPLASH SCREEN — Logo pulse loader
+══════════════════════════ */
+
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.8rem;
+    pointer-events: all;
+    transition: opacity 0.5s ease;
+}
+
+/* Subtle grain overlay */
+.splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.splash-logo-wrap {
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+
+.splash-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2;
+    animation: splashPulse 0.9s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(200, 150, 62, 0);
+}
+
+/* Pulsing ring behind the logo */
+.splash-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 150, 62, 0.2);
+    animation: splashRing 0.9s ease-in-out infinite;
+}
+
+.splash-ring:nth-child(2) {
+    inset: -14px;
+    border-color: rgba(200, 150, 62, 0.08);
+    animation-delay: 0.15s;
+}
+
+@keyframes splashPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(200, 150, 62, 0);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.94);
+        box-shadow: 0 0 20px 3px rgba(200, 150, 62, 0.18);
+    }
+}
+
+@keyframes splashRing {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0;
+        transform: scale(1.35);
+    }
+}
