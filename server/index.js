@@ -13,14 +13,55 @@
  */
 
 require('dotenv').config({ path: require('node:path').join(__dirname, '.env') })
-const express = require('express')
-const cors    = require('cors')
-const https   = require('node:https')
+const express    = require('express')
+const cors       = require('cors')
+const helmet     = require('helmet')
+const rateLimit  = require('express-rate-limit')
+const https      = require('node:https')
 
 const app  = express()
 const PORT = process.env.PORT || 3001
 
-// Allow Vite dev-server origins + your production domain
+// ── Security headers (helmet) ─────────────────────────────────────────
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc:  ["'self'"],
+            scriptSrc:   ["'self'"],
+            styleSrc:    ["'self'", "'unsafe-inline'"],
+            imgSrc:      ["'self'", 'data:', 'https://i.ytimg.com', 'https://*.ytimg.com'],
+            mediaSrc:    ["'self'", 'blob:'],
+            connectSrc:  ["'self'", 'https://www.googleapis.com'],
+            fontSrc:     ["'self'"],
+            objectSrc:   ["'none'"],
+            frameSrc:    ["'none'"],
+            baseUri:     ["'self'"],
+            formAction:  ["'self'"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,   // needed for cross-origin images (YouTube thumbnails)
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+}))
+
+// ── Rate limiting — prevent API abuse ─────────────────────────────────
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,       // 15-minute window
+    max: 100,                        // max 100 requests per window per IP
+    standardHeaders: true,           // Return rate limit info in `RateLimit-*` headers
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+})
+app.use('/api/', apiLimiter)
+
+// Stricter limit for the refresh endpoint (cache bust)
+const refreshLimiter = rateLimit({
+    windowMs: 60 * 1000,             // 1-minute window
+    max: 3,                          // max 3 refreshes per minute
+    message: { error: 'Refresh rate limited. Try again in a minute.' },
+})
+app.use('/api/videos/refresh', refreshLimiter)
+
+// ── CORS — restrict origins ───────────────────────────────────────────
 app.use(cors({
     origin: [
         'http://localhost:5173',
@@ -28,8 +69,15 @@ app.use(cors({
         'http://localhost:5175',
         /^https?:\/\/madhwa/,           // any madhwa* production domain
     ],
+    methods: ['GET'],                   // only GET needed — no POST/PUT/DELETE
+    allowedHeaders: ['Content-Type'],
 }))
-app.use(express.json())
+
+// ── Body parsing with size limit ──────────────────────────────────────
+app.use(express.json({ limit: '1kb' }))  // tiny limit — API only receives GET requests
+
+// ── Disable X-Powered-By (also done by helmet, but explicit) ─────────
+app.disable('x-powered-by')
 
 // ── Config ────────────────────────────────────────────────────────────
 const API_KEY       = process.env.YOUTUBE_API_KEY || ''
@@ -198,7 +246,7 @@ async function fetchVideos(forceRefresh = false) {
 // ── Routes ────────────────────────────────────────────────────────────
 
 /** GET /api/videos — all videos (latest first) */
-app.get('/api/videos', async (req, res) => {
+app.get('/api/videos', async (_req, res) => {
     try {
         const videos = await fetchVideos()
         res.json({
@@ -208,39 +256,51 @@ app.get('/api/videos', async (req, res) => {
             cacheAge: cache.ts ? Math.round((Date.now() - cache.ts) / 1000) + 's' : null,
         })
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        console.error('[api/videos]', err.message)
+        res.status(500).json({ error: 'Internal server error' })
     }
 })
 
 /** GET /api/videos/featured — single latest video */
-app.get('/api/videos/featured', async (req, res) => {
+app.get('/api/videos/featured', async (_req, res) => {
     try {
         const videos = await fetchVideos()
         res.json(videos[0] ?? null)
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        console.error('[api/featured]', err.message)
+        res.status(500).json({ error: 'Internal server error' })
     }
 })
 
 /** GET /api/videos/refresh — force a cache bust (useful after uploading) */
-app.get('/api/videos/refresh', async (req, res) => {
+app.get('/api/videos/refresh', async (_req, res) => {
     try {
         const videos = await fetchVideos(true)
         res.json({ ok: true, count: videos.length })
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        console.error('[api/refresh]', err.message)
+        res.status(500).json({ error: 'Internal server error' })
     }
 })
 
-/** GET /api/health */
+/** GET /api/health — only expose safe info, never secrets */
 app.get('/api/health', (_req, res) => {
     res.json({
-        ok:          true,
-        apiKey:      !!API_KEY,
-        channelHandle: CHANNEL_HANDLE,
-        cached:      !!cache.videos,
-        videoCount:  cache.videos?.length ?? 0,
+        ok:         true,
+        cached:     !!cache.videos,
+        videoCount: cache.videos?.length ?? 0,
     })
+})
+
+// ── Catch-all 404 for unknown API routes ──────────────────────────────
+app.use('/api', (_req, res) => {
+    res.status(404).json({ error: 'Not found' })
+})
+
+// ── Global error handler — never leak stack traces ────────────────────
+app.use((err, _req, res, _next) => {
+    console.error('[unhandled]', err)
+    res.status(500).json({ error: 'Internal server error' })
 })
 
 // ── Start ─────────────────────────────────────────────────────────────

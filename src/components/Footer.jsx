@@ -112,8 +112,8 @@ export default function Footer() {
                         </nav>
                         <nav className="footer-nav">
                             <span className="footer-nav-heading">Socials</span>
-                            <a href="https://www.youtube.com/@Madhwahrudayavasa" target="_blank" rel="noreferrer">YouTube ↗</a>
-                            <a href="https://www.instagram.com/madhwahrudayavasa/" target="_blank" rel="noreferrer">Instagram ↗</a>
+                            <a href="https://www.youtube.com/@Madhwahrudayavasa" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
+                            <a href="https://www.instagram.com/madhwahrudayavasa/" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
                         </nav>
                     </div>
 
