@@ -31,6 +31,8 @@ const team = [
 export default function Contact() {
     const pageRef = useRef(null)
 
+    useEffect(() => { document.title = 'Contact | Madhwa Hrudaya Vaasa' }, [])
+
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.utils.toArray('[data-reveal]').forEach((el) => {

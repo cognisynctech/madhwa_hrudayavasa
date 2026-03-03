@@ -13,6 +13,8 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Library() {
     const [activeCategory, setActiveCategory] = useState('All')
     const [searchQuery, setSearchQuery]       = useState('')
+
+    useEffect(() => { document.title = 'Library | Madhwa Hrudaya Vaasa' }, [])
     const [videos, setVideos]                 = useState(null)        // null = loading
     const [apiStatus, setApiStatus]           = useState('loading')   // 'loading'|'live'|'offline'
     const [page, setPage]                     = useState(1)
@@ -85,6 +87,7 @@ export default function Library() {
 
             {/* ── Hero — split layout, full-bleed from top ──────── */}
             <section className="lib-hero">
+                <h1 className="sr-only">Episode Library</h1>
                 {featured ? (
                 <a
                     className="lib-hero-card"

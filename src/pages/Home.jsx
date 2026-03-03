@@ -180,7 +180,7 @@ function HeroSection({ loaded }) {
             {/* LEFT — text column */}
             <div className="hero-left">
                 <div ref={textRef} className="hero-text-wrap">
-                    <div className="hero-title">
+                    <h1 className="hero-title">
                         {/* Layer 1: The Top SOLID layer, with a hole cut out by mask-image */}
                         <div ref={solidLayerRef} className="hero-layer hero-layer--solid">
                             <TitleContent />
@@ -189,7 +189,7 @@ function HeroSection({ loaded }) {
                         <div className="hero-layer hero-layer--outline">
                             <TitleContent />
                         </div>
-                    </div>
+                    </h1>
                 </div>
                 <div className="hero-bottom">
                     <p className="hero-col anim-fadein-delay1">Dwaita Siddhanta.<br />Conversations.</p>
@@ -410,6 +410,8 @@ export default function Home({ loaded }) {
     const [modalOpen, setModalOpen] = useState(false)
     const [modalSrc, setModalSrc] = useState('')
     const [liveVideos, setLiveVideos] = useState(null)
+
+    useEffect(() => { document.title = '\u0CAE\u0CA7\u0CCD\u0CB5 \u0CB9\u0CC3\u0CA6\u0CAF \u0CB5\u0CBE\u0CB8 | Madhwa Hrudaya Vaasa' }, [])
 
     // Fetch live videos for the episode ticker
     useEffect(() => {
