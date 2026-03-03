@@ -416,7 +416,14 @@ export default function Home({ loaded }) {
     // Fetch live videos for the episode ticker
     useEffect(() => {
         fetchVideos()
-            .then(data => { if (data?.length > 0) setLiveVideos(data) })
+            .then(data => {
+                if (data?.length > 0) {
+                    setLiveVideos(data)
+                    // Videos loaded → page height changed → recalc scroll triggers
+                    setTimeout(() => ScrollTrigger.refresh(), 100)
+                    setTimeout(() => ScrollTrigger.refresh(), 600)
+                }
+            })
             .catch(() => {})
     }, [])
 

@@ -20,6 +20,7 @@ export default function Footer() {
     /* Home: white veil slides UP to reveal dark footer.
        Dark pages: footer content rises up with clip-path/translate reveal. */
     useEffect(() => {
+        const footer = footerRef.current
         const ctx = gsap.context(() => {
             if (isHome) {
                 // White veil scrolls away
@@ -27,7 +28,7 @@ export default function Footer() {
                     yPercent: -100,
                     ease: 'none',
                     scrollTrigger: {
-                        trigger: footerRef.current,
+                        trigger: footer,
                         start: 'top bottom',
                         end: 'top 20%',
                         scrub: 1.2,
@@ -35,7 +36,7 @@ export default function Footer() {
                 })
             } else {
                 // Dark-page reveal: footer content slides up from below
-                const items = footerRef.current.querySelectorAll(
+                const items = footer.querySelectorAll(
                     '.footer-brand-row, .footer-email, .footer-newsletter, .footer-nav, .footer-meta, .footer-wordmark'
                 )
                 gsap.fromTo(items,
@@ -46,23 +47,36 @@ export default function Footer() {
                         ease: 'power3.out',
                         stagger: 0.07,
                         scrollTrigger: {
-                            trigger: footerRef.current,
+                            trigger: footer,
                             start: 'top 88%',
                         },
                     }
                 )
             }
         })
-        // Refresh triggers so footer/KrishnaShader always reveal correctly
-        // after SPA navigation or slow image loads change the page height
+
+        // Refresh triggers multiple times to handle async content (API data, lazy images)
         const t1 = setTimeout(() => ScrollTrigger.refresh(), 200)
         const t2 = setTimeout(() => ScrollTrigger.refresh(), 800)
+        const t3 = setTimeout(() => ScrollTrigger.refresh(), 2000)
+
+        // Watch for page height changes (images loading, async data) and refresh triggers
+        let ro
+        const mainEl = document.querySelector('main')
+        if (mainEl && typeof ResizeObserver !== 'undefined') {
+            let debounce
+            ro = new ResizeObserver(() => {
+                clearTimeout(debounce)
+                debounce = setTimeout(() => ScrollTrigger.refresh(), 150)
+            })
+            ro.observe(mainEl)
+        }
+
         return () => {
             clearTimeout(t1)
             clearTimeout(t2)
-            // On home: revert is fine (veil scrub animation — no inline opacity to preserve)
-            // On dark pages: use kill() to destroy tweens/triggers WITHOUT reverting inline
-            // opacity:1 — preventing elements from going invisible on route change
+            clearTimeout(t3)
+            if (ro) ro.disconnect()
             if (isHome) { ctx.revert() } else { ctx.kill() }
         }
     }, [isHome])
