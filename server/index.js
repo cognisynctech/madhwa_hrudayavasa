@@ -12,10 +12,10 @@
  *   Enable "YouTube Data API v3"
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '.env') })
+require('dotenv').config({ path: require('node:path').join(__dirname, '.env') })
 const express = require('express')
 const cors    = require('cors')
-const https   = require('https')
+const https   = require('node:https')
 
 const app  = express()
 const PORT = process.env.PORT || 3001
@@ -48,7 +48,7 @@ function ytFetch(url) {
             res.on('data', chunk => (body += chunk))
             res.on('end', () => {
                 try { resolve(JSON.parse(body)) }
-                catch (e) { reject(new Error('JSON parse error from YouTube')) }
+                catch (e) { reject(new Error(`JSON parse error from YouTube: ${e.message}`)) }
             })
         }).on('error', reject)
     })
@@ -79,9 +79,10 @@ function parseDuration(iso) {
     if (!iso) return ''
     const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
     if (!m) return ''
-    const h   = parseInt(m[1] || 0)
-    const min = parseInt(m[2] || 0)
-    return h > 0 ? `${h}h${min > 0 ? ` ${min}m` : ''}` : `${min}m`
+    const h   = Number.parseInt(m[1] || 0)
+    const min = Number.parseInt(m[2] || 0)
+    const minPart = min > 0 ? ` ${min}m` : ''
+    return h > 0 ? `${h}h${minPart}` : `${min}m`
 }
 
 // ── Resolve uploads playlist once ────────────────────────────────────
@@ -111,7 +112,7 @@ async function fetchVideos(forceRefresh = false) {
 
         // ── Step 1: Paginate through ALL uploads (50 per page, loop nextPageToken) ──
         const allSnippets = []
-        let pageToken     = undefined
+        let pageToken
 
         do {
             const params = new URLSearchParams({

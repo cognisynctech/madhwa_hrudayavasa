@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import PropTypes from 'prop-types'
 
 /*
   ShatterText — Blob-based text shatter effect
@@ -73,6 +74,56 @@ export default function ShatterText({ children, className = '' }) {
         const ctx = canvas.getContext('2d')
         let time = 0
 
+        function updateOpacity(p) {
+            const lifeRatio = p.age / p.life
+            if (lifeRatio < 0.12) {
+                p.opacity = (lifeRatio / 0.12) * p.targetOpacity
+            } else if (lifeRatio > 0.55) {
+                p.opacity = p.targetOpacity * (1 - (lifeRatio - 0.55) / 0.45)
+            } else {
+                p.opacity = p.targetOpacity
+            }
+        }
+
+        function drawLines(p, alpha, i, particles) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j]
+                const dist = Math.hypot(p.x - p2.x, p.y - p2.y)
+                if (dist < CONFIG.connectionDistance) {
+                    const lineAlpha = (1 - dist / CONFIG.connectionDistance) *
+                        Math.min(alpha, p2.opacity) * 0.5
+                    const isGold = (i + j) % 3 === 0
+                    ctx.beginPath()
+                    ctx.strokeStyle = isGold
+                        ? `rgba(212, 175, 55, ${lineAlpha})`
+                        : `rgba(255, 255, 255, ${lineAlpha})`
+                    ctx.lineWidth = 0.8
+                    ctx.moveTo(p.x, p.y)
+                    ctx.lineTo(p2.x, p2.y)
+                    ctx.stroke()
+                }
+            }
+        }
+
+        function drawParticle(p, alpha) {
+            ctx.save()
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4)
+            grad.addColorStop(0, `${p.color}${alpha.toFixed(2)})`)
+            grad.addColorStop(0.25, `${p.color}${(alpha * 0.6).toFixed(2)})`)
+            grad.addColorStop(0.6, `${p.color}${(alpha * 0.15).toFixed(2)})`)
+            grad.addColorStop(1, `${p.color}0)`)
+            ctx.fillStyle = grad
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2)
+            ctx.fill()
+
+            ctx.fillStyle = `${p.color}${Math.min(alpha * 1.2, 1).toFixed(2)})`
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2)
+            ctx.fill()
+            ctx.restore()
+        }
+
         function animate() {
             time += 0.016
             ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -87,14 +138,7 @@ export default function ShatterText({ children, className = '' }) {
                 p.vx *= 0.994
                 p.vy *= 0.994
 
-                const lifeRatio = p.age / p.life
-                if (lifeRatio < 0.12) {
-                    p.opacity = (lifeRatio / 0.12) * p.targetOpacity
-                } else if (lifeRatio > 0.55) {
-                    p.opacity = p.targetOpacity * (1 - (lifeRatio - 0.55) / 0.45)
-                } else {
-                    p.opacity = p.targetOpacity
-                }
+                updateOpacity(p)
 
                 if (p.age >= p.life) {
                     particles.splice(i, 1)
@@ -104,43 +148,8 @@ export default function ShatterText({ children, className = '' }) {
                 const twinkle = 0.65 + 0.35 * Math.sin(time * 4.5 + p.phase)
                 const alpha = p.opacity * twinkle
 
-                // Constellation lines — alternate white and gold
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j]
-                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y)
-                    if (dist < CONFIG.connectionDistance) {
-                        const lineAlpha = (1 - dist / CONFIG.connectionDistance) *
-                            Math.min(alpha, p2.opacity) * 0.5
-                        const isGold = (i + j) % 3 === 0
-                        ctx.beginPath()
-                        ctx.strokeStyle = isGold
-                            ? `rgba(212, 175, 55, ${lineAlpha})`
-                            : `rgba(255, 255, 255, ${lineAlpha})`
-                        ctx.lineWidth = 0.8
-                        ctx.moveTo(p.x, p.y)
-                        ctx.lineTo(p2.x, p2.y)
-                        ctx.stroke()
-                    }
-                }
-
-                // Particle glow
-                ctx.save()
-                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4)
-                grad.addColorStop(0, `${p.color}${alpha.toFixed(2)})`)
-                grad.addColorStop(0.25, `${p.color}${(alpha * 0.6).toFixed(2)})`)
-                grad.addColorStop(0.6, `${p.color}${(alpha * 0.15).toFixed(2)})`)
-                grad.addColorStop(1, `${p.color}0)`)
-                ctx.fillStyle = grad
-                ctx.beginPath()
-                ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2)
-                ctx.fill()
-
-                // Bright core dot
-                ctx.fillStyle = `${p.color}${Math.min(alpha * 1.2, 1).toFixed(2)})`
-                ctx.beginPath()
-                ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2)
-                ctx.fill()
-                ctx.restore()
+                drawLines(p, alpha, i, particles)
+                drawParticle(p, alpha)
             }
 
             rafRef.current = requestAnimationFrame(animate)
@@ -230,13 +239,13 @@ export default function ShatterText({ children, className = '' }) {
         }
 
         decayLoop()
-        window.addEventListener('mousemove', handleMouseMove)
+        globalThis.addEventListener('mousemove', handleMouseMove)
         document.addEventListener('mouseleave', () => {
             mouseRef.current = { x: -1000, y: -1000 }
         })
         return () => {
             cancelAnimationFrame(decayRaf)
-            window.removeEventListener('mousemove', handleMouseMove)
+            globalThis.removeEventListener('mousemove', handleMouseMove)
         }
     }, [])
 
@@ -263,4 +272,9 @@ export default function ShatterText({ children, className = '' }) {
             </div>
         </div>
     )
+}
+
+ShatterText.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
 }

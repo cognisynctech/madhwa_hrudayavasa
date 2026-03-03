@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import * as THREE from 'three'
 
 /**
@@ -122,12 +123,12 @@ export default function KrishnaParticles({ src }) {
                     if (bright > THRESHOLD) continue
 
                     // Map to clip-space-ish coords between -aspect..aspect, -1..1
-                    const x = ((col / COLS) - 0.5) * aspect * 2.0
-                    const y = ((row / ROWS) - 0.5) * -2.0
+                    const x = ((col / COLS) - 0.5) * aspect * 2
+                    const y = ((row / ROWS) - 0.5) * -2
 
                     // Tint: shift image colors toward a warm golden palette
                     // Original: sepia-ish browns → we boost red/gold channel
-                    const cr = Math.min(1, r * 1.0 + 0.25)   // warm shift
+                    const cr = Math.min(1, r * 1 + 0.25)   // warm shift
                     const cg = g * 0.55
                     const cb = b * 0.15
 
@@ -167,11 +168,15 @@ export default function KrishnaParticles({ src }) {
 
         /* ── Animation ── */
         let raf
-        const clock = new THREE.Clock()
+        let prevTime = performance.now()
+        let elapsed = 0
 
         const animate = () => {
             raf = requestAnimationFrame(animate)
-            uniforms.uTime.value = clock.getElapsedTime()
+            const now = performance.now()
+            elapsed += (now - prevTime) / 1000
+            prevTime = now
+            uniforms.uTime.value = elapsed
             uniforms.uMouse.value.set(mouseRef.current.x, mouseRef.current.y)
 
             // Smooth repel in/out
@@ -213,7 +218,7 @@ export default function KrishnaParticles({ src }) {
             window.removeEventListener('resize', onResize)
             renderer.dispose()
             if (mount.contains(renderer.domElement)) {
-                mount.removeChild(renderer.domElement)
+                renderer.domElement.remove()
             }
         }
     }, [src])
@@ -224,4 +229,8 @@ export default function KrishnaParticles({ src }) {
             style={{ width: '100%', height: '100%', cursor: 'crosshair' }}
         />
     )
+}
+
+KrishnaParticles.propTypes = {
+    src: PropTypes.string.isRequired,
 }

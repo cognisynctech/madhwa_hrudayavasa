@@ -6,8 +6,6 @@
  * is unavailable (e.g. during a pure static deployment).
  */
 
-import { podcasts } from '../data/podcasts'
-
 const BASE = '/api'
 
 /**
@@ -41,4 +39,4 @@ export async function refreshCache() {
 }
 
 /** Static fallback — used when backend is unreachable */
-export { podcasts as staticVideos }
+export { podcasts as staticVideos } from '../data/podcasts'

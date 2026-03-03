@@ -1,4 +1,5 @@
 import { useEffect, useRef, useMemo, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -208,14 +209,14 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
     const uniforms = useMemo(() => ({
         uPortrait: { value: portraitTex },
         uAtlas: { value: atlasTex },
-        uMouse: { value: new THREE.Vector2(-10.0, -10.0) },
+        uMouse: { value: new THREE.Vector2(-10, -10) },
         uTime: { value: 0 },
         uRes: { value: new THREE.Vector2(size.width, size.height) },
         uImgAspect: { value: imgAspect },
-        uLoaded: { value: isLoaded ? 1.0 : 0.0 },
+        uLoaded: { value: isLoaded ? 1 : 0 },
         uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
-        uClickTime: { value: -100.0 },
-        uIsPhoto: { value: 0.0 }
+        uClickTime: { value: -100 },
+        uIsPhoto: { value: 0 }
     }), [portraitTex, atlasTex, imgAspect, isLoaded])
 
     useFrame(({ clock }) => {
@@ -224,7 +225,7 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
         if (clickStateRef.current.wantsToggle) {
             clickStateRef.current.wantsToggle = false;
             clickStateRef.current.time = clock.getElapsedTime();
-            clickStateRef.current.isPhoto = clickStateRef.current.isPhoto > 0.5 ? 0.0 : 1.0;
+            clickStateRef.current.isPhoto = clickStateRef.current.isPhoto > 0.5 ? 0 : 1;
         }
 
         matRef.current.uniforms.uTime.value = clock.getElapsedTime()
@@ -241,17 +242,26 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
             clickStateRef.current.y = e.uv.y;
             clickStateRef.current.wantsToggle = true;
         }}>
-            <planeGeometry args={[viewport.width, viewport.height]} />
+            <planeGeometry args={[viewport.width, viewport.height]} /> {/* NOSONAR — R3F JSX */}
             <shaderMaterial
                 ref={matRef}
-                vertexShader={VS}
-                fragmentShader={FS}
-                uniforms={uniforms}
-                transparent
-                depthWrite={false}
+                vertexShader={VS} // NOSONAR — R3F JSX prop
+                fragmentShader={FS} // NOSONAR — R3F JSX prop
+                uniforms={uniforms} // NOSONAR — R3F JSX prop
+                transparent // NOSONAR — R3F JSX prop
+                depthWrite={false} // NOSONAR — R3F JSX prop
             />
         </mesh>
     )
+}
+
+ShaderPlane.propTypes = {
+    portraitTex: PropTypes.object.isRequired,
+    atlasTex: PropTypes.object.isRequired,
+    mouseRef: PropTypes.object.isRequired,
+    imgAspect: PropTypes.number.isRequired,
+    isLoaded: PropTypes.bool.isRequired,
+    clickStateRef: PropTypes.object.isRequired,
 }
 
 /* ══════════════════════════════════════════════════════
@@ -259,8 +269,8 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
 ══════════════════════════════════════════════════════ */
 export default function KrishnaShader() {
     const containerRef = useRef(null)
-    const mouseRef = useRef([-10.0, -10.0])
-    const clickStateRef = useRef({ time: -100.0, x: 0.5, y: 0.5, isPhoto: 0.0, wantsToggle: false })
+    const mouseRef = useRef([-10, -10])
+    const clickStateRef = useRef({ time: -100, x: 0.5, y: 0.5, isPhoto: 0, wantsToggle: false })
     const [imgAspect, setImgAspect] = useState(0.75)   // portrait default until loaded
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -307,7 +317,7 @@ export default function KrishnaShader() {
                 1 - (e.clientY - r.top) / r.height,
             ]
         }
-        const onLeave = () => { mouseRef.current = [-10.0, -10.0] }
+        const onLeave = () => { mouseRef.current = [-10, -10] }
         el.addEventListener('mousemove', onMove)
         el.addEventListener('mouseleave', onLeave)
         return () => {

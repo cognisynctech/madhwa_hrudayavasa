@@ -75,7 +75,7 @@ export default function Contact() {
                         {team.map((m, i) => {
                             const photo = getTeamPhoto(m.name, m.photoSlug)
                             return (
-                                <div key={i} className="con-member" data-reveal style={{ '--i': i }}>
+                                <div key={m.name} className="con-member" data-reveal style={{ '--i': i }}>
                                     <div className="con-member-photo">
                                         {photo ? (
                                             <img src={photo} alt={m.name} />

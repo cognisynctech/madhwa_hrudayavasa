@@ -85,19 +85,7 @@ export default function Library() {
 
             {/* ── Hero — split layout, full-bleed from top ──────── */}
             <section className="lib-hero">
-                {!featured ? (
-                    /* Skeleton — shown while API is in flight */
-                    <div className="lib-hero-card lib-hero-skeleton">
-                        <div className="lib-hero-body">
-                            <div className="lib-skel lib-skel--tags" />
-                            <div className="lib-skel lib-skel--title" />
-                            <div className="lib-skel lib-skel--title lib-skel--title2" />
-                            <div className="lib-skel lib-skel--desc" />
-                            <div className="lib-skel lib-skel--footer" />
-                        </div>
-                        <div className="lib-hero-media lib-skel--media" />
-                    </div>
-                ) : (
+                {featured ? (
                 <a
                     className="lib-hero-card"
                     href={getYoutubeUrl(featured.videoId)}
@@ -146,6 +134,18 @@ export default function Library() {
                         </div>
                     </div>
                 </a>
+                ) : (
+                    /* Skeleton — shown while API is in flight */
+                    <div className="lib-hero-card lib-hero-skeleton">
+                        <div className="lib-hero-body">
+                            <div className="lib-skel lib-skel--tags" />
+                            <div className="lib-skel lib-skel--title" />
+                            <div className="lib-skel lib-skel--title lib-skel--title2" />
+                            <div className="lib-skel lib-skel--desc" />
+                            <div className="lib-skel lib-skel--footer" />
+                        </div>
+                        <div className="lib-hero-media lib-skel--media" />
+                    </div>
                 )}
             </section>
             <div className="container"><div className="rule" /></div>
@@ -182,10 +182,11 @@ export default function Library() {
                     <div className="lib-discovery-footer">
                         <div className="lib-result-count">
                             <span className="lib-result-num">
-                                {isSearching
-                                    ? filtered.length
-                                    : filtered.length === 0 ? 0 : `${(page - 1) * ITEMS_PER_PAGE + 1}–${Math.min(page * ITEMS_PER_PAGE, filtered.length)}`
-                                }
+                                {(() => {
+                                    if (isSearching) return filtered.length
+                                    if (filtered.length === 0) return 0
+                                    return `${(page - 1) * ITEMS_PER_PAGE + 1}–${Math.min(page * ITEMS_PER_PAGE, filtered.length)}`
+                                })()}
                             </span>
                             <span className="lib-result-txt">
                                 {isSearching ? '' : `of ${filtered.length} `}episode{filtered.length === 1 ? '' : 's'}

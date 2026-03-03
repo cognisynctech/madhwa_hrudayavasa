@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * AsciiCanvas — renders an image as interactive ASCII/binary art.
@@ -16,7 +17,7 @@ export default function AsciiCanvas({ src, className }) {
     const canvasRef = useRef(null)
     const frameRef = useRef(null)
     const stateRef = useRef({
-        chars: [],        // { char, r, g, b, alpha, cx, cy, zone }
+        chars: [],
         mouseX: -999,
         mouseY: -999,
         width: 0,
@@ -26,7 +27,6 @@ export default function AsciiCanvas({ src, className }) {
     /* ─── Load image and build character grid ─── */
     useEffect(() => {
         const canvas = canvasRef.current
-        const ctx = canvas.getContext('2d')
         const offCanvas = document.createElement('canvas')
         const offCtx = offCanvas.getContext('2d')
         const img = new Image()
@@ -72,7 +72,9 @@ export default function AsciiCanvas({ src, className }) {
                     const char = CHARSET[charIdx]
 
                     // Zone: 0=top(face), 1=mid(neck/shoulders), 2=bottom(body)
-                    const zone = row < rows * 0.35 ? 0 : row < rows * 0.65 ? 1 : 2
+                    let zone = 2
+                    if (row < rows * 0.35) zone = 0
+                    else if (row < rows * 0.65) zone = 1
 
                     chars.push({ char, r, g, b, alpha: 0.7 + brightness * 0.3, cx: col * FONT_SIZE, cy: row * FONT_SIZE, zone })
                 }
@@ -112,7 +114,7 @@ export default function AsciiCanvas({ src, className }) {
                 // Mouse proximity glow
                 const dx = mouseX - cx
                 const dy = mouseY - cy
-                const dist = Math.sqrt(dx * dx + dy * dy)
+                const dist = Math.hypot(dx, dy)
                 const glow = Math.max(0, 1 - dist / 90) // 90px radius
 
                 // Blend original color with white based on proximity
@@ -151,4 +153,9 @@ export default function AsciiCanvas({ src, className }) {
             style={{ display: 'block', width: '100%', height: '100%', cursor: 'crosshair' }}
         />
     )
+}
+
+AsciiCanvas.propTypes = {
+    src: PropTypes.string.isRequired,
+    className: PropTypes.string,
 }

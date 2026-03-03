@@ -23,7 +23,6 @@ function lerp(a, b, t) { return a + (b - a) * t }
 
 export default function KrishnaP5() {
     const containerRef = useRef(null)
-    const stateRef = useRef(null)
     const rafRef = useRef(null)
 
     useEffect(() => {
@@ -42,7 +41,7 @@ export default function KrishnaP5() {
         canvas.height = H
 
         /* ── Load image and sample cells ── */
-        const img = new window.Image()
+        const img = new globalThis.Image()
         img.src = '/kisnu.png'
 
         img.onload = () => {
@@ -113,7 +112,7 @@ export default function KrishnaP5() {
                 // Mouse distance
                 const dx = mouseX - c.x
                 const dy = mouseY - c.y
-                const dist = Math.sqrt(dx * dx + dy * dy)
+                const dist = Math.hypot(dx, dy)
                 const tgt = dist < GLOW_R ? 1 - dist / GLOW_R : 0
 
                 // Smooth glow
@@ -130,14 +129,11 @@ export default function KrishnaP5() {
                     // Swap to a random dense char from the silhouette part of charset
                     const rIdx = Math.floor(Math.random() * 8)
                     c.char = CHARSET[rIdx]
-                } else {
-                    // Idle flicker only in the darker silhouette areas
-                    if (c.br < 0.5 && Math.random() < 0.004) {
-                        c.char = CHARSET[Math.floor(Math.random() * 5)]
-                        c.flick = Math.floor(3 + Math.random() * 5)
-                    } else if (c.flick === 0) {
-                        c.char = c.base
-                    }
+                } else if (c.br < 0.5 && Math.random() < 0.004) {
+                    c.char = CHARSET[Math.floor(Math.random() * 5)]
+                    c.flick = Math.floor(3 + Math.random() * 5)
+                } else if (c.flick === 0) {
+                    c.char = c.base
                 }
 
                 // Final colour: amber base → cream white on hover
@@ -146,7 +142,7 @@ export default function KrishnaP5() {
                 const fb = Math.round(lerp(c.cb, 235, c.glow))
 
                 // Alpha: dark pixels fully visible; bright pixels dimmer
-                const rawAlpha = lerp(0.55, 1.0, c.glow) * (1 - c.br * 0.55) * 255
+                const rawAlpha = lerp(0.55, 1, c.glow) * (1 - c.br * 0.55) * 255
                 const alpha = Math.round(Math.min(255, Math.max(60, rawAlpha)))
 
                 ctx.fillStyle = `rgba(${fr},${fg},${fb},${alpha / 255})`
@@ -184,7 +180,7 @@ export default function KrishnaP5() {
             container.removeEventListener('mousemove', onMove)
             container.removeEventListener('mouseleave', onLeave)
             ro.disconnect()
-            if (container.contains(canvas)) container.removeChild(canvas)
+            if (container.contains(canvas)) canvas.remove()
         }
     }, [])
 

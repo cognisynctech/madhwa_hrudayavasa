@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import PropTypes from 'prop-types'
 import { gsap } from 'gsap'
 import './PageLoader.css'
 
@@ -94,4 +95,8 @@ export default function PageLoader({ onComplete }) {
             </div>
         </div>
     )
+}
+
+PageLoader.propTypes = {
+    onComplete: PropTypes.func.isRequired,
 }

@@ -248,16 +248,12 @@
     scale: 0.72;
     transition: opacity 0.38s, scale 0.38s var(--ease);
     z-index: 2;
+    pointer-events: none;
 }
 
 .lib-hero-card:hover .lib-hero-play {
     opacity: 1;
     scale: 1;
-}
-
-/* play overlay must never intercept pointer events on the link */
-.lib-hero-play {
-    pointer-events: none;
 }
 
 /* ── Hero Skeleton — shown while API is in-flight ────── */

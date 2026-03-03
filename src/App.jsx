@@ -24,11 +24,11 @@ export default function App() {
 
   /* Lock scroll while splash is showing, force to top when done */
   useEffect(() => {
-    if (!loaded) {
-      document.body.style.overflow = 'hidden'
+    if (loaded) {
+      document.body.style.overflow = ''
       window.scrollTo(0, 0)
     } else {
-      document.body.style.overflow = ''
+      document.body.style.overflow = 'hidden'
       window.scrollTo(0, 0)
     }
   }, [loaded])

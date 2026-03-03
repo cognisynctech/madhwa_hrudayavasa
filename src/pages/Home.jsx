@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import easyVideo from '../assets/videos/easy.mp4'
+import video1 from '../assets/videos/1.mp4'
+import video2 from '../assets/videos/2.mp4'
+import video4 from '../assets/videos/4.mp4'
+import daasaVideo from '../assets/videos/daasa.mp4'
 import mulaImg from '../assets/pics/mula.jpeg'
+import hlImg1 from '../assets/pics/1.png'
+import hlImg2 from '../assets/pics/2.jpeg'
+import hlImg3 from '../assets/pics/3.jpeg'
 import { podcasts } from '../data/podcasts'
 import { fetchVideos } from '../api/videos'
 import KrishnaShader from '../components/KrishnaShader'
@@ -32,9 +39,9 @@ const homeTeam = [
 
 /* ─── Data ─── */
 const highlights = [
-    { id: 1, title: 'ದ್ವೈತ ತತ್ತ್ವ', subtitle: 'Dwaita Philosophy', desc: 'The complete metaphysical vision of Madhvacharya.', fullWidth: true },
-    { id: 2, title: 'ಅಷ್ಟ ಮಠ', subtitle: 'Ashta Mathas of Udupi', desc: 'Eight living monasteries. One unbroken tradition.' },
-    { id: 3, title: 'ಹರಿದಾಸ ಸಾಹಿತ್ಯ', subtitle: 'Haridasa Literature', desc: 'Devotion in song — the Carnatic tradition of the Dasas.' },
+    { id: 1, title: 'ದ್ವೈತ ತತ್ತ್ವ', subtitle: 'Dwaita Philosophy', desc: 'The complete metaphysical vision of Madhvacharya.', fullWidth: true, img: hlImg1, video: video2 },
+    { id: 2, title: 'ವ್ಯಾಸ ಸಾಹಿತ್ಯ', subtitle: 'Vyaasa Sahithya', desc: 'The literary tradition rooted in the works of Vedavyasa.', img: hlImg3 },
+    { id: 3, title: 'ದಾಸ ಸಾಹಿತ್ಯ', subtitle: 'Daasa Sahithya', desc: 'Devotion in song — the tradition of the Haridasas.', img: hlImg2, video: daasaVideo },
 ]
 
 const pillars = [
@@ -42,6 +49,23 @@ const pillars = [
     { num: '02', label: 'Bheda', title: 'Five irreducible differences.', body: 'God and the individual soul are forever distinct. The world is real. The differences between things are not an illusion — they are fundamental to the structure of existence.' },
     { num: '03', label: 'Bhakti', title: 'Devotion as the means to moksha.', body: 'Jnana alone is not enough. It is bhakti — fuelled by right knowledge — that carries the soul toward liberation. Vishnu is the sole independent reality.' },
 ]
+
+/* ─── Title content (extracted to avoid defining component inside component) ─── */
+function TitleContent() {
+    return (
+        <>
+            <span className="title-samarkan">
+                {'Madhwa'.split('').map((c, i) => <span key={`m-${c}-${i}`} className="h-char">{c}</span>)}
+            </span>
+            <span className="title-kn-hero">
+                <span className="h-char">ಹೃದಯ</span>
+            </span>
+            <span className="title-samarkan title-vaasa">
+                {'Vaasa'.split('').map((c, i) => <span key={`v-${c}-${i}`} className="h-char">{c}</span>)}
+            </span>
+        </>
+    )
+}
 
 /* ─── Hero component ─── */
 function HeroSection({ loaded }) {
@@ -141,27 +165,15 @@ function HeroSection({ loaded }) {
             setMask(`radial-gradient(circle ${RADIUS}px at -9999px -9999px, transparent 0%, transparent 60%, black 100%)`)
         }
 
-        window.addEventListener('mousemove', onMove)
+        globalThis.addEventListener('mousemove', onMove)
         document.addEventListener('mouseleave', onLeave)
         return () => {
-            window.removeEventListener('mousemove', onMove)
+            globalThis.removeEventListener('mousemove', onMove)
             document.removeEventListener('mouseleave', onLeave)
         }
     }, [])
 
-    const TitleContent = () => (
-        <>
-            <span className="title-samarkan">
-                {'Madhwa'.split('').map((c, i) => <span key={i} className="h-char">{c}</span>)}
-            </span>
-            <span className="title-kn-hero">
-                <span className="h-char">ಹೃದಯ</span>
-            </span>
-            <span className="title-samarkan title-vaasa">
-                {'Vaasa'.split('').map((c, i) => <span key={i} className="h-char">{c}</span>)}
-            </span>
-        </>
-    )
+    // TitleContent is defined outside the component (above)
 
     return (
         <section ref={heroRef} className="hero">
@@ -206,6 +218,10 @@ function HeroSection({ loaded }) {
     )
 }
 
+HeroSection.propTypes = {
+    loaded: PropTypes.bool,
+}
+
 /* ─── Showreel section — veil-reveal (like footer) ─── */
 function ShowreelSection({ onPlay }) {
     const trackRef   = useRef(null)
@@ -234,9 +250,11 @@ function ShowreelSection({ onPlay }) {
     return (
         /* Extra height = scroll room for the sticky animation */
         <div ref={trackRef} className="showreel-track">
-            <section
+            <button
+                type="button"
                 ref={sectionRef}
                 className={`showreel${hovered ? ' hovered' : ''}`}
+                aria-label="Play showreel video"
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 onMouseMove={(e) => {
@@ -249,7 +267,7 @@ function ShowreelSection({ onPlay }) {
                 <div ref={veilRef} className="showreel-veil" />
 
                 <video
-                    src={easyVideo}
+                    src={video1}
                     autoPlay
                     muted
                     loop
@@ -259,9 +277,13 @@ function ShowreelSection({ onPlay }) {
                 <div className="showreel-badge" style={{ left: cursor.x, top: cursor.y }}>
                     <span>▶</span> Play Reel
                 </div>
-            </section>
+            </button>
         </div>
     )
+}
+
+ShowreelSection.propTypes = {
+    onPlay: PropTypes.func,
 }
 
 /* ─── Highlight card ─── */
@@ -283,17 +305,19 @@ function HighlightCard({ item, layout, onPlay }) {
     }, [hovered])
 
     return (
-        <div
+        <button
+            type="button"
             ref={cardRef}
             className={`hl-card hl-card--${layout}${hovered ? ' hovered' : ''}`}
+            aria-label={`Play ${item.subtitle} video`}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onMouseMove={handleMove}
-            onClick={() => onPlay && onPlay()}
+            onClick={() => onPlay?.()}
             style={{ cursor: 'none' }}
         >
             <div className="hl-card-bg">
-                <img src={mulaImg} alt={item.subtitle} />
+                <img src={item.img || mulaImg} alt={item.subtitle} />
             </div>
             <div className="hl-card-info">
                 <p className="hl-card-sub">{item.subtitle}</p>
@@ -302,14 +326,26 @@ function HighlightCard({ item, layout, onPlay }) {
             </div>
             {/* Hover preview video */}
             <div className="hl-preview" style={{ left: pos.x, top: pos.y }}>
-                <video ref={vidRef} src={easyVideo} muted loop playsInline />
+                <video ref={vidRef} src={item.video || video1} muted loop playsInline />
             </div>
             {/* Play badge — follows cursor like showreel badge */}
             <div className="hl-play-badge" style={{ left: pos.x, top: pos.y }}>
                 <span>▶</span> Play
             </div>
-        </div>
+        </button>
     )
+}
+
+HighlightCard.propTypes = {
+    item: PropTypes.shape({
+        img: PropTypes.string,
+        subtitle: PropTypes.string,
+        title: PropTypes.string,
+        desc: PropTypes.string,
+        video: PropTypes.string,
+    }).isRequired,
+    layout: PropTypes.string,
+    onPlay: PropTypes.func,
 }
 
 /* ─── Team Strip ─── */
@@ -323,7 +359,7 @@ function TeamStrip() {
                         {homeTeam.map((m, i) => {
                             const photo = getTeamPhoto(m.name, m.photoSlug)
                             return (
-                                <Link to="/contact" key={i} className="team-face" style={{ '--i': i }}>
+                                <Link to="/contact" key={m.name} className="team-face" style={{ '--i': i }}>
                                     <div className="team-face-img">
                                         {photo
                                             ? <img src={photo} alt={m.name} />
@@ -425,7 +461,7 @@ export default function Home({ loaded }) {
             <HeroSection loaded={loaded} />
 
             {/* 2. SHOWREEL */}
-            <ShowreelSection onPlay={() => openModal(easyVideo)} />
+            <ShowreelSection onPlay={() => openModal(video1)} />
 
             {/* 3. MISSION */}
             <section className="mission" data-reveal>
@@ -463,10 +499,10 @@ export default function Home({ loaded }) {
                         <Link to="/library" className="highlights-all">See the work ↗</Link>
                     </div>
                 </div>
-                <HighlightCard item={highlights[0]} layout="full" onPlay={() => openModal(easyVideo)} />
+                <HighlightCard item={highlights[0]} layout="full" onPlay={() => openModal(highlights[0].video || video1)} />
                 <div className="hl-split">
-                    <HighlightCard item={highlights[1]} layout="half" onPlay={() => openModal(easyVideo)} />
-                    <HighlightCard item={highlights[2]} layout="half" onPlay={() => openModal(easyVideo)} />
+                    <HighlightCard item={highlights[1]} layout="half" onPlay={() => openModal(highlights[1].video || video1)} />
+                    <HighlightCard item={highlights[2]} layout="half" onPlay={() => openModal(highlights[2].video || video1)} />
                 </div>
             </section>
 
@@ -498,7 +534,7 @@ export default function Home({ loaded }) {
                         {(() => {
                             const list = liveVideos?.slice(0, 12) ?? podcasts
                             return [...list, ...list].map((p, i) => (
-                                <EpisodeTile key={i} podcast={p} index={i} />
+                                <EpisodeTile key={`${p.videoId || p.title}-${i}`} podcast={p} index={i} />
                             ))
                         })()}
                     </div>
@@ -531,7 +567,7 @@ export default function Home({ loaded }) {
             {/* 9. VIDEO GROW SECTION */}
             <section ref={videoGrowRef} className="video-grow">
                 <div className="video-grow-inner" ref={videoInnerRef}>
-                    <video src={easyVideo} autoPlay muted loop playsInline className="video-grow-vid" />
+                    <video src={video4} autoPlay muted loop playsInline className="video-grow-vid" />
                     <div className="video-grow-overlay">
                         <p className="video-grow-label">Watch a conversation ↗</p>
                     </div>
@@ -549,6 +585,10 @@ export default function Home({ loaded }) {
 
         </main>
     )
+}
+
+Home.propTypes = {
+    loaded: PropTypes.bool,
 }
 
 /* ─── Episode Tile with organic shape ─── */
@@ -573,4 +613,15 @@ function EpisodeTile({ podcast, index }) {
             </div>
         </div>
     )
+}
+
+EpisodeTile.propTypes = {
+    podcast: PropTypes.shape({
+        thumbnail: PropTypes.string,
+        videoId: PropTypes.string,
+        title: PropTypes.string,
+        titleEn: PropTypes.string,
+        category: PropTypes.string,
+    }).isRequired,
+    index: PropTypes.number.isRequired,
 }
