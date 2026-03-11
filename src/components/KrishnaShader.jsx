@@ -159,9 +159,9 @@ const FS = /* glsl */`
     vec3 asciiCol = mix(vec3(0.8, 0.3, 0.05), vec3(1.0, 0.65, 0.15), figureLuma);
 
     // ── Intro Reveal Animation (Center outwards) ──────────────
-    float introTime = uTime * 0.6; 
+    float introTime = uTime * 1.2; 
     float distFromCenter = distance(cellUv, vec2(0.5, 0.5));
-    float sweepEdge = distFromCenter * 1.5; 
+    float sweepEdge = distFromCenter * 1.2; 
     float popNoise = random(cellIdx) * 0.15; 
     float sweepPos = introTime - (sweepEdge + popNoise);
     float reveal = smoothstep(0.0, 0.01, sweepPos);

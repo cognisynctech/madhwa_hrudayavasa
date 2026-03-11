@@ -98,18 +98,23 @@
 /* ── Timeline controls ── */
 .vmodal-controls {
     position: fixed;
-    bottom: clamp(2rem, 5vh, 4rem);
+    bottom: clamp(1.2rem, 3vh, 2.5rem);
     left: 50%;
     translate: -50% 0;
-    width: min(88vw, 1400px);
+    width: min(84vw, 1340px);
     display: flex;
     align-items: center;
     gap: 1rem;
-    z-index: 9004;
+    z-index: 9005;
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(242, 240, 235, 0.08);
 }
 
 .vmodal-controls--visible {
@@ -212,8 +217,9 @@
 
 @media (max-width: 768px) {
     .vmodal-controls {
-        width: 96vw;
-        bottom: 1.5rem;
+        width: 92vw;
+        bottom: 1rem;
         gap: 0.7rem;
+        padding: 0.4rem 0.7rem;
     }
 }
