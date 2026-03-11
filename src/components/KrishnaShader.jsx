@@ -213,14 +213,17 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
         uTime: { value: 0 },
         uRes: { value: new THREE.Vector2(size.width, size.height) },
         uImgAspect: { value: imgAspect },
-        uLoaded: { value: isLoaded ? 1 : 0 },
+        uLoaded: { value: 0 },
         uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
         uClickTime: { value: -100 },
         uIsPhoto: { value: 0 }
-    }), [portraitTex, atlasTex, imgAspect, isLoaded])
+    }), [portraitTex, atlasTex, imgAspect])
 
     useFrame(({ clock }) => {
         if (!matRef.current) return
+
+        // Always sync uLoaded so the GPU uniform reflects the current texture state
+        matRef.current.uniforms.uLoaded.value = isLoaded ? 1.0 : 0.0
 
         if (clickStateRef.current.wantsToggle) {
             clickStateRef.current.wantsToggle = false;
