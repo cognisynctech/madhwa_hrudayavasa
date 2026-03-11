@@ -72,6 +72,15 @@ function HeroSection({ loaded }) {
     const heroRef = useRef(null)
     const textRef = useRef(null)
     const solidLayerRef = useRef(null)
+    const shaderReadyRef = useRef(false)
+    const heroRightTweenRef = useRef(null)
+
+    // Called by KrishnaShader when its texture is loaded and sweep begins
+    const onShaderReady = useRef(() => {
+        shaderReadyRef.current = true
+        // If the GSAP tween was deferred, fire it now
+        heroRightTweenRef.current?.()
+    }).current
 
     // Hero text entrance — waits for splash to complete
     useEffect(() => {
@@ -126,11 +135,25 @@ function HeroSection({ loaded }) {
         }
 
         if (heroRight) {
-            tl.fromTo(heroRight,
-                { opacity: 0 },
-                { opacity: 1, duration: 1.6, ease: 'power2.out' },
-                0.15
-            )
+            // Defer hero-right fade until the shader texture is loaded
+            // so the GSAP opacity fade and the shader sweep play together
+            const runFade = () => {
+                gsap.fromTo(heroRight,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 1.6, ease: 'power2.out' }
+                )
+            }
+            if (shaderReadyRef.current) {
+                runFade()
+            } else {
+                heroRightTweenRef.current = runFade
+                // Safety: if texture takes too long, fade in anyway after 4s
+                setTimeout(() => {
+                    if (!shaderReadyRef.current) {
+                        gsap.set(heroRight, { opacity: 1 })
+                    }
+                }, 4000)
+            }
         }
 
         return () => {
@@ -201,7 +224,7 @@ function HeroSection({ loaded }) {
 
             {/* RIGHT — 30% WebGL GLSL shader: Krishna char grid */}
             <div className="hero-right">
-                {loaded && <KrishnaShader />}
+                {loaded && <KrishnaShader onReady={onShaderReady} />}
                 <div className="hero-right-overlay" />
             </div>
 

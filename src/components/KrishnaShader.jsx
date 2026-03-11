@@ -66,6 +66,7 @@ const FS = /* glsl */`
   uniform vec2      uRes;          // CSS pixel size of this canvas panel
   uniform float     uImgAspect;    // naturalWidth / naturalHeight of portrait
   uniform float     uLoaded;
+  uniform float     uLoadTime;
   uniform vec2      uClickPos;
   uniform float     uClickTime;
   uniform float     uIsPhoto;
@@ -159,9 +160,10 @@ const FS = /* glsl */`
     vec3 asciiCol = mix(vec3(0.8, 0.3, 0.05), vec3(1.0, 0.65, 0.15), figureLuma);
 
     // ── Intro Reveal Animation (Center outwards) ──────────────
-    float introTime = uTime * 0.6;
+    float animAge = uTime - uLoadTime;   // relative to texture-ready moment
+    float introTime = animAge * 0.6;     // gentle speed (same as original)
     float distFromCenter = distance(cellUv, vec2(0.5, 0.5));
-    float sweepEdge = distFromCenter * 1.5; 
+    float sweepEdge = distFromCenter * 1.5;  // wide spread (same as original) 
     float popNoise = random(cellIdx) * 0.15; 
     float sweepPos = introTime - (sweepEdge + popNoise);
     float reveal = smoothstep(0.0, 0.01, sweepPos);
@@ -204,6 +206,7 @@ const FS = /* glsl */`
 ══════════════════════════════════════════════════════ */
 function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, clickStateRef }) {
     const matRef = useRef()
+    const loadTimeRef = useRef(-1)
     const { size, viewport } = useThree()
 
     // Stable uniforms — NEVER recreate (deps = textures only).
@@ -216,6 +219,7 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
         uRes: { value: new THREE.Vector2(size.width, size.height) },
         uImgAspect: { value: imgAspect },
         uLoaded: { value: 0 },
+        uLoadTime: { value: 99999 },
         uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
         uClickTime: { value: -100 },
         uIsPhoto: { value: 0 }
@@ -225,9 +229,15 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
     useFrame(({ clock }) => {
         if (!matRef.current) return
 
+        // Record the exact clock time of the FIRST frame where texture is ready
+        if (isLoaded && loadTimeRef.current < 0) {
+            loadTimeRef.current = clock.getElapsedTime()
+        }
+
         // Sync ALL dynamic uniforms every frame — guarantees GPU always has latest values
         matRef.current.uniforms.uLoaded.value = isLoaded ? 1.0 : 0.0
         matRef.current.uniforms.uImgAspect.value = imgAspect
+        matRef.current.uniforms.uLoadTime.value = loadTimeRef.current >= 0 ? loadTimeRef.current : 99999
 
         if (clickStateRef.current.wantsToggle) {
             clickStateRef.current.wantsToggle = false;
@@ -274,12 +284,14 @@ ShaderPlane.propTypes = {
 /* ══════════════════════════════════════════════════════
    Exported component
 ══════════════════════════════════════════════════════ */
-export default function KrishnaShader() {
+export default function KrishnaShader({ onReady }) {
     const containerRef = useRef(null)
     const mouseRef = useRef([-10, -10])
     const clickStateRef = useRef({ time: -100, x: 0.5, y: 0.5, isPhoto: 0, wantsToggle: false })
     const [imgAspect, setImgAspect] = useState(0.75)   // portrait default until loaded
     const [isLoaded, setIsLoaded] = useState(false)
+    const onReadyRef = useRef(onReady)
+    onReadyRef.current = onReady
 
     const atlasTex = useMemo(() => buildAtlasTex(), [])
 
@@ -291,6 +303,8 @@ export default function KrishnaShader() {
             loaded.needsUpdate = true
             setImgAspect(loaded.image.naturalWidth / loaded.image.naturalHeight)
             setIsLoaded(true)
+            // Signal parent that the shader is ready to animate
+            onReadyRef.current?.()
         })
         t.minFilter = t.magFilter = THREE.LinearFilter
         portraitTexRef.current = t
