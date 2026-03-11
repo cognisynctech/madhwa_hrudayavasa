@@ -1,0 +1,9 @@
+# Don't deploy the Express dev server — Vercel uses api/ serverless functions instead
+server/
+
+# Unnecessary zip file
+src/assets/fonts/ATS-Bengaluru.zip
+src/assets/videos/ATS-Bengaluru.zip
+
+# Secrets (belt & suspenders alongside .gitignore)
+.env

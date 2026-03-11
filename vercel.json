@@ -1,13 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "buildCommand": "vite build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/videos/featured", "destination": "/api/videos/featured" },
-    { "source": "/api/videos/refresh", "destination": "/api/videos/refresh" },
-    { "source": "/api/videos", "destination": "/api/videos/index" },
-    { "source": "/api/health", "destination": "/api/health" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
