@@ -2,7 +2,7 @@
  * GET /api/videos — all videos (latest first)
  * Vercel Serverless Function
  */
-import { fetchVideos, setCors } from './_lib/youtube.js'
+import { fetchVideos, setCors } from '../_lib/youtube.js'
 
 export default async function handler(req, res) {
   if (setCors(req, res)) return // preflight handled
