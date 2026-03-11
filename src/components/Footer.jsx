@@ -59,6 +59,21 @@ export default function Footer() {
         const t1 = setTimeout(() => ScrollTrigger.refresh(), 200)
         const t2 = setTimeout(() => ScrollTrigger.refresh(), 800)
         const t3 = setTimeout(() => ScrollTrigger.refresh(), 2000)
+        const t4 = setTimeout(() => ScrollTrigger.refresh(), 4000)
+
+        // Safety fallback — ensure footer content is always visible after 3s
+        // even if GSAP/ScrollTrigger fails to fire
+        const tSafety = setTimeout(() => {
+            const items = footer?.querySelectorAll(
+                '.footer-brand-row, .footer-email, .footer-newsletter, .footer-nav, .footer-meta, .footer-wordmark, .footer-credit'
+            )
+            items?.forEach(el => {
+                if (getComputedStyle(el).opacity === '0') {
+                    el.style.opacity = '1'
+                    el.style.transform = 'none'
+                }
+            })
+        }, 3000)
 
         // Watch for page height changes (images loading, async data) and refresh triggers
         let ro
@@ -76,6 +91,8 @@ export default function Footer() {
             clearTimeout(t1)
             clearTimeout(t2)
             clearTimeout(t3)
+            clearTimeout(t4)
+            clearTimeout(tSafety)
             if (ro) ro.disconnect()
             if (isHome) { ctx.revert() } else { ctx.kill() }
         }

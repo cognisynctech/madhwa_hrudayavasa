@@ -68,6 +68,7 @@ const FS = /* glsl */`
   uniform float     uLoaded;
   uniform vec2      uClickPos;
   uniform float     uClickTime;
+  uniform float     uLoadTime;
   uniform float     uIsPhoto;
 
   varying vec2 vUv;
@@ -159,7 +160,8 @@ const FS = /* glsl */`
     vec3 asciiCol = mix(vec3(0.8, 0.3, 0.05), vec3(1.0, 0.65, 0.15), figureLuma);
 
     // ── Intro Reveal Animation (Center outwards) ──────────────
-    float introTime = uTime * 1.2; 
+    float animAge = uTime - uLoadTime;  // time since texture loaded
+    float introTime = animAge * 1.4; 
     float distFromCenter = distance(cellUv, vec2(0.5, 0.5));
     float sweepEdge = distFromCenter * 1.2; 
     float popNoise = random(cellIdx) * 0.15; 
@@ -204,6 +206,7 @@ const FS = /* glsl */`
 ══════════════════════════════════════════════════════ */
 function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, clickStateRef }) {
     const matRef = useRef()
+    const loadTimeRef = useRef(-1)
     const { size, viewport } = useThree()
 
     // Stable uniforms — NEVER recreate (deps = textures only).
@@ -216,6 +219,7 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
         uRes: { value: new THREE.Vector2(size.width, size.height) },
         uImgAspect: { value: imgAspect },
         uLoaded: { value: 0 },
+        uLoadTime: { value: 99999 },
         uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
         uClickTime: { value: -100 },
         uIsPhoto: { value: 0 }
@@ -225,9 +229,17 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
     useFrame(({ clock }) => {
         if (!matRef.current) return
 
+        const now = clock.getElapsedTime()
+
+        // Record the exact moment the texture becomes ready (once)
+        if (isLoaded && loadTimeRef.current < 0) {
+            loadTimeRef.current = now
+        }
+
         // Sync ALL dynamic uniforms every frame — guarantees GPU always has latest values
         matRef.current.uniforms.uLoaded.value = isLoaded ? 1.0 : 0.0
         matRef.current.uniforms.uImgAspect.value = imgAspect
+        matRef.current.uniforms.uLoadTime.value = loadTimeRef.current >= 0 ? loadTimeRef.current : 99999
 
         if (clickStateRef.current.wantsToggle) {
             clickStateRef.current.wantsToggle = false;

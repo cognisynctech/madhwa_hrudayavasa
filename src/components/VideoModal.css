@@ -100,14 +100,13 @@
     position: fixed;
     bottom: clamp(1.2rem, 3vh, 2.5rem);
     left: 50%;
-    translate: -50% 0;
     width: min(84vw, 1340px);
     display: flex;
     align-items: center;
     gap: 1rem;
     z-index: 9005;
     opacity: 0;
-    transform: translateY(12px);
+    transform: translate(-50%, 12px);
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
     padding: 0.5rem 1rem;
@@ -115,11 +114,12 @@
     backdrop-filter: blur(12px);
     border-radius: 12px;
     border: 1px solid rgba(242, 240, 235, 0.08);
+    box-sizing: border-box;
 }
 
 .vmodal-controls--visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
     pointer-events: auto;
 }
 
