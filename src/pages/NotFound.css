@@ -1,0 +1,123 @@
+/* ══════════════════════════
+   404 — NOT FOUND
+══════════════════════════ */
+
+.notfound {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--fg);
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Massive 404 behind */
+.notfound-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(12rem, 28vw, 28rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: rgba(242, 240, 235, 0.03);
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+    font-family: var(--font-samarkan), serif;
+}
+
+/* Content */
+.notfound-code {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 1;
+}
+
+.notfound-code span {
+    background: linear-gradient(135deg, #f2f0eb 0%, rgba(242, 240, 235, 0.4) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.notfound-title {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: 400;
+    color: var(--fg-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.notfound-sub {
+    font-size: clamp(0.75rem, 1.2vw, 0.88rem);
+    color: rgba(242, 240, 235, 0.3);
+    max-width: 28ch;
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Magnetic-feel button */
+.notfound-btn {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2.2rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--fg);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.3s;
+    text-decoration: none;
+}
+
+.notfound-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(242, 240, 235, 0.12);
+}
+
+.notfound-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.notfound-btn svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s ease;
+}
+
+.notfound-btn:hover svg {
+    transform: translateX(-3px);
+}
+
+/* Subtle separator line */
+.notfound-rule {
+    width: 48px;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 1.6rem;
+    position: relative;
+    z-index: 1;
+}

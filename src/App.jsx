@@ -10,6 +10,7 @@ import SplashScreen from './components/SplashScreen'
 import Home from './pages/Home'
 import Library from './pages/Library'
 import Contact from './pages/Contact'
+import NotFound from './pages/NotFound'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/" element={<Home loaded={loaded} />} />
         <Route path="/library" element={<Library />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </Router>
