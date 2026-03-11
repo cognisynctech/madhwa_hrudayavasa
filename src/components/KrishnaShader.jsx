@@ -206,6 +206,8 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
     const matRef = useRef()
     const { size, viewport } = useThree()
 
+    // Stable uniforms — NEVER recreate (deps = textures only).
+    // All dynamic values (uLoaded, uImgAspect, etc.) are synced in useFrame.
     const uniforms = useMemo(() => ({
         uPortrait: { value: portraitTex },
         uAtlas: { value: atlasTex },
@@ -217,13 +219,15 @@ function ShaderPlane({ portraitTex, atlasTex, mouseRef, imgAspect, isLoaded, cli
         uClickPos: { value: new THREE.Vector2(0.5, 0.5) },
         uClickTime: { value: -100 },
         uIsPhoto: { value: 0 }
-    }), [portraitTex, atlasTex, imgAspect])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), [portraitTex, atlasTex])
 
     useFrame(({ clock }) => {
         if (!matRef.current) return
 
-        // Always sync uLoaded so the GPU uniform reflects the current texture state
+        // Sync ALL dynamic uniforms every frame — guarantees GPU always has latest values
         matRef.current.uniforms.uLoaded.value = isLoaded ? 1.0 : 0.0
+        matRef.current.uniforms.uImgAspect.value = imgAspect
 
         if (clickStateRef.current.wantsToggle) {
             clickStateRef.current.wantsToggle = false;
@@ -279,36 +283,19 @@ export default function KrishnaShader() {
 
     const atlasTex = useMemo(() => buildAtlasTex(), [])
 
-    // Load portrait texture — state updates happen in useEffect to avoid
-    // "setState before mount" warning from React
+    // Load portrait texture with reliable onLoad callback (not polling)
     const portraitTexRef = useRef(null)
     if (!portraitTexRef.current) {
         const loader = new THREE.TextureLoader()
-        const t = loader.load('/kisnu.png')
+        const t = loader.load('/kisnu.png', (loaded) => {
+            loaded.needsUpdate = true
+            setImgAspect(loaded.image.naturalWidth / loaded.image.naturalHeight)
+            setIsLoaded(true)
+        })
         t.minFilter = t.magFilter = THREE.LinearFilter
         portraitTexRef.current = t
     }
     const portraitTex = portraitTexRef.current
-
-    useEffect(() => {
-        const tex = portraitTexRef.current
-        if (!tex) return
-        // If image already loaded synchronously (cached)
-        if (tex.image) {
-            setImgAspect(tex.image.naturalWidth / tex.image.naturalHeight)
-            setIsLoaded(true)
-            return
-        }
-        // Otherwise poll until load completes (TextureLoader doesn't expose a promise)
-        const id = setInterval(() => {
-            if (tex.image) {
-                setImgAspect(tex.image.naturalWidth / tex.image.naturalHeight)
-                setIsLoaded(true)
-                clearInterval(id)
-            }
-        }, 50)
-        return () => clearInterval(id)
-    }, [])
 
     useEffect(() => {
         const el = containerRef.current

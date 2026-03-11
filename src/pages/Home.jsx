@@ -420,8 +420,11 @@ export default function Home({ loaded }) {
                 if (data?.length > 0) {
                     setLiveVideos(data)
                     // Videos loaded → page height changed → recalc scroll triggers
+                    // Multiple refreshes to handle images/fonts loading after DOM paint
                     setTimeout(() => ScrollTrigger.refresh(), 100)
                     setTimeout(() => ScrollTrigger.refresh(), 600)
+                    setTimeout(() => ScrollTrigger.refresh(), 2000)
+                    setTimeout(() => ScrollTrigger.refresh(), 4000)
                 }
             })
             .catch(() => {})
