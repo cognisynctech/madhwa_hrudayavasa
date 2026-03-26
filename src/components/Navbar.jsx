@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import logoImg from '../assets/pics/logo.jpg'
-import { podcasts } from '../data/podcasts'
 import './Navbar.css'
 
 /* Sections that have a light/white background */
@@ -105,7 +104,7 @@ export default function Navbar() {
                 <div className={`nav-ctx${libScrolled ? ' nav-ctx--visible' : ''}`}>
                     <span className="nav-ctx-label">Library</span>
                     <span className="nav-ctx-dot" />
-                    <span className="nav-ctx-count">{podcasts.length} Episodes</span>
+                    <span className="nav-ctx-count">Episodes</span>
                 </div>
 
                 <a href="mailto:madhwahrudayavasa@gmail.com" className="nav-cta">

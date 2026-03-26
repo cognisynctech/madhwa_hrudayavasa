@@ -11,7 +11,6 @@ import mulaImg from '../assets/pics/mula.jpeg'
 import hlImg1 from '../assets/pics/1.png'
 import hlImg2 from '../assets/pics/2.jpeg'
 import hlImg3 from '../assets/pics/3.jpeg'
-import { podcasts } from '../data/podcasts'
 import { fetchVideos } from '../api/videos'
 import KrishnaShader from '../components/KrishnaShader'
 import VideoModal from '../components/VideoModal'
@@ -567,7 +566,8 @@ export default function Home({ loaded }) {
                 <div className="ep-track-wrap">
                     <div className="ep-track">
                         {(() => {
-                            const list = liveVideos?.slice(0, 12) ?? podcasts
+                            const list = liveVideos?.slice(0, 12) ?? []
+                            if (list.length === 0) return null
                             return [...list, ...list].map((p, i) => (
                                 <EpisodeTile key={`${p.videoId || p.title}-${i}`} podcast={p} index={i} />
                             ))

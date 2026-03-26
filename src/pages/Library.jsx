@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
-    podcasts, CHANNEL_URL,
+    CHANNEL_URL,
     getThumb, getYoutubeUrl,
 } from '../data/podcasts'
 import { fetchVideos } from '../api/videos'
@@ -15,13 +15,14 @@ export default function Library() {
     const [searchQuery, setSearchQuery]       = useState('')
 
     useEffect(() => { document.title = 'Library | Madhwa Hrudaya Vaasa' }, [])
-    const [videos, setVideos]                 = useState(null)        // null = loading
+    const [videos, setVideos]                 = useState([])
+    const [isLoading, setIsLoading]           = useState(true)
     const [apiStatus, setApiStatus]           = useState('loading')   // 'loading'|'live'|'offline'
     const [page, setPage]                     = useState(1)
     const ITEMS_PER_PAGE = 12
     const pageRef = useRef(null)
 
-    /* ── Fetch latest videos from backend, fall back to static ─ */
+    /* ── Fetch latest videos from backend only ─ */
     useEffect(() => {
         fetchVideos()
             .then((data) => {
@@ -29,21 +30,21 @@ export default function Library() {
                     setVideos(data)
                     setApiStatus('live')
                 } else {
-                    setVideos(podcasts)
+                    setVideos([])
                     setApiStatus('offline')
                 }
             })
             .catch(() => {
-                setVideos(podcasts)
+                setVideos([])
                 setApiStatus('offline')
+            })
+            .finally(() => {
+                setIsLoading(false)
             })
     }, [])
 
     /* ── Derived: categories from whichever data source we have ─ */
-    const categories = useMemo(
-        () => videos ? ['All', ...new Set(videos.map((v) => v.category))] : ['All'],
-        [videos]
-    )
+    const categories = useMemo(() => ['All', ...new Set(videos.map((v) => v.category))], [videos])
 
     const featured = videos?.[0] ?? null
 
@@ -88,7 +89,7 @@ export default function Library() {
             {/* ── Hero — split layout, full-bleed from top ──────── */}
             <section className="lib-hero">
                 <h1 className="sr-only">Episode Library</h1>
-                {featured ? (
+                {featured && (
                 <a
                     className="lib-hero-card"
                     href={getYoutubeUrl(featured.videoId)}
@@ -137,18 +138,6 @@ export default function Library() {
                         </div>
                     </div>
                 </a>
-                ) : (
-                    /* Skeleton — shown while API is in flight */
-                    <div className="lib-hero-card lib-hero-skeleton">
-                        <div className="lib-hero-body">
-                            <div className="lib-skel lib-skel--tags" />
-                            <div className="lib-skel lib-skel--title" />
-                            <div className="lib-skel lib-skel--title lib-skel--title2" />
-                            <div className="lib-skel lib-skel--desc" />
-                            <div className="lib-skel lib-skel--footer" />
-                        </div>
-                        <div className="lib-hero-media lib-skel--media" />
-                    </div>
                 )}
             </section>
             <div className="container"><div className="rule" /></div>
@@ -186,8 +175,8 @@ export default function Library() {
                         <div className="lib-result-count">
                             <span className="lib-result-num">
                                 {(() => {
-                                    if (isSearching) return filtered.length
-                                    if (filtered.length === 0) return 0
+                                    if (isSearching) return String(filtered.length)
+                                    if (filtered.length === 0) return '0'
                                     return `${(page - 1) * ITEMS_PER_PAGE + 1}–${Math.min(page * ITEMS_PER_PAGE, filtered.length)}`
                                 })()}
                             </span>
@@ -220,13 +209,15 @@ export default function Library() {
 
             {/* ── Episode grid ─────────────────────────────────── */}
             <section className="lib-grid-section">
-                {filtered.length === 0 ? (
+                {!isLoading && filtered.length === 0 ? (
                     <div className="container">
                         <div className="lib-empty" data-reveal>
-                            <p>No episodes match your search.</p>
-                            <button onClick={() => { setSearchQuery(''); setActiveCategory('All') }}>
-                                Reset filters
-                            </button>
+                            <p>{searchQuery ? 'No episodes match your search.' : 'No episodes available right now.'}</p>
+                            {searchQuery && (
+                                <button onClick={() => { setSearchQuery(''); setActiveCategory('All') }}>
+                                    Reset filters
+                                </button>
+                            )}
                         </div>
                     </div>
                 ) : (

@@ -2,8 +2,6 @@
  * videos.js — Frontend API client for video data
  *
  * Fetches from the Express backend (/api/videos).
- * Falls back to the static podcasts.js data if the server
- * is unavailable (e.g. during a pure static deployment).
  */
 
 const BASE = '/api'
@@ -37,6 +35,3 @@ export async function refreshCache() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return res.json()
 }
-
-/** Static fallback — used when backend is unreachable */
-export { podcasts as staticVideos } from '../data/podcasts'
