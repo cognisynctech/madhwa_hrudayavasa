@@ -84,7 +84,7 @@ export default function Navbar() {
         <>
             <nav ref={navRef} className={`nav nav--${theme}`}>
                 <Link to="/" className="nav-brand">
-                    <img src={logoImg} alt="Madhwa Hrudaya Vaasa" className="nav-logo" />
+                    <img src={logoImg} alt="Madhwa Hrudaya Vasa" className="nav-logo" />
                 </Link>
 
                 <ul className="nav-links">

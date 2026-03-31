@@ -329,3 +329,13 @@
 }
 
 
+
+.con-member-insta {
+    color: var(--fg);
+    opacity: 0.5;
+    transition: opacity 0.3s var(--ease);
+    display: flex;
+}
+.con-member-insta:hover {
+    opacity: 1;
+}

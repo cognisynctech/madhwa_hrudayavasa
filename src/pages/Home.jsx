@@ -29,11 +29,11 @@ function getTeamPhoto(name, photoSlug) {
     return key ? teamImages[key].default : null
 }
 const homeTeam = [
-    { name: 'Srinidhi',  role: 'Host' },
-    { name: 'Sarvottam', role: 'Direction' },
-    { name: 'Pranava',   role: 'Sound',    photoSlug: 'anirudha' },
-    { name: 'Anirudha',  role: 'Producer', photoSlug: 'pranava'  },
-    { name: 'Smriti',    role: 'Research' },
+    { name: 'Sarvottam', role: 'Direction', insta: '#' },
+    { name: 'Srinidhi',  role: 'Host', insta: '#' },
+    { name: 'Pranava',   role: 'Sound',    photoSlug: 'anirudha', insta: '#' },
+    { name: 'Anirudha',  role: 'Producer', photoSlug: 'pranava', insta: '#'  },
+    { name: 'Smriti',    role: 'Research', insta: '#' },
 ]
 
 /* ─── Data ─── */
@@ -59,8 +59,8 @@ function TitleContent() {
             <span className="title-kn-hero">
                 <span className="h-char">ಹೃದಯ</span>
             </span>
-            <span className="title-samarkan title-vaasa">
-                {'Vaasa'.split('').map((c, i) => <span key={`v-${c}-${i}`} className="h-char">{c}</span>)}
+            <span className="title-samarkan title-vasa">
+                {'Vasa'.split('').map((c, i) => <span key={`v-${c}-${i}`} className="h-char">{c}</span>)}
             </span>
         </>
     )
@@ -381,15 +381,22 @@ function TeamStrip() {
                         {homeTeam.map((m, i) => {
                             const photo = getTeamPhoto(m.name, m.photoSlug)
                             return (
-                                <Link to="/contact" key={m.name} className="team-face" style={{ '--i': i }}>
-                                    <div className="team-face-img">
+                                <div key={m.name} className="team-face" style={{ '--i': i }}>
+                                    <Link to="/contact" className="team-face-img">
                                         {photo
                                             ? <img src={photo} alt={m.name} />
                                             : <span className="team-face-init">{m.name[0]}</span>
                                         }
+                                    </Link>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+                                        <span className="team-face-name">{m.name}</span>
+                                        <a href={m.insta} target="_blank" rel="noopener noreferrer" className="team-face-insta" aria-label={`${m.name} on Instagram`}>
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                                            </svg>
+                                        </a>
                                     </div>
-                                    <span className="team-face-name">{m.name}</span>
-                                </Link>
+                                </div>
                             )
                         })}
                     </div>
@@ -433,7 +440,7 @@ export default function Home({ loaded }) {
     const [modalSrc, setModalSrc] = useState('')
     const [liveVideos, setLiveVideos] = useState(null)
 
-    useEffect(() => { document.title = '\u0CAE\u0CA7\u0CCD\u0CB5 \u0CB9\u0CC3\u0CA6\u0CAF \u0CB5\u0CBE\u0CB8 | Madhwa Hrudaya Vaasa' }, [])
+    useEffect(() => { document.title = '\u0CAE\u0CA7\u0CCD\u0CB5 \u0CB9\u0CC3\u0CA6\u0CAF \u0CB5\u0CBE\u0CB8 | Madhwa Hrudaya Vasa' }, [])
 
     // Fetch live videos for the episode ticker
     useEffect(() => {
@@ -517,7 +524,7 @@ export default function Home({ loaded }) {
                     <div className="essentials-row">
                         <p className="essentials-tagline">Ancient wisdom.<br />Modern conversations.</p>
                         <div className="essentials-body">
-                            <p>Madhwa Hrudaya Vaasa is a long-form podcast dedicated to the Dwaita Vedanta tradition of Sri Madhvacharya. Every episode is a journey into Tattvavada — its philosophy, its devotion, its living lineage across the eight Mathas of Udupi.</p>
+                            <p>Madhwa Hrudaya Vasa is a long-form podcast dedicated to the Dwaita Vedanta tradition of Sri Madhvacharya. Every episode is a journey into Tattvavada — its philosophy, its devotion, its living lineage across the eight Mathas of Udupi.</p>
                             <p>We sit with Swamijis, pandits, and scholars to have the conversations that matter.</p>
                             <Link to="/contact" className="essentials-link">Learn more ↗</Link>
                         </div>
@@ -566,8 +573,9 @@ export default function Home({ loaded }) {
                 <div className="ep-track-wrap">
                     <div className="ep-track">
                         {(() => {
+                            if (liveVideos === null) return <div style={{ minHeight: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>Loading episodes...</div>
                             const list = liveVideos?.slice(0, 12) ?? []
-                            if (list.length === 0) return null
+                            if (list.length === 0) return <div style={{ minHeight: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>No episodes available.</div>
                             return [...list, ...list].map((p, i) => (
                                 <EpisodeTile key={`${p.videoId || p.title}-${i}`} podcast={p} index={i} />
                             ))

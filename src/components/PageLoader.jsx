@@ -5,7 +5,7 @@ import './PageLoader.css'
 
 /**
  * PageLoader — Awwwards-level cinematic intro animation.
- * Reveals "Madhwa / ಹೃದಯ / Vaasa" line by line, fills a gold progress bar,
+ * Reveals "Madhwa / ಹೃದಯ / Vasa" line by line, fills a gold progress bar,
  * then wipes the entire loader off-screen upward.
  *
  * Props:
@@ -81,7 +81,7 @@ export default function PageLoader({ onComplete }) {
                         <span ref={line2Ref} className="loader-word loader-word--kn">ಹೃದಯ</span>
                     </div>
                     <div className="loader-line-wrap">
-                        <span ref={line3Ref} className="loader-word loader-word--accent">Vaasa</span>
+                        <span ref={line3Ref} className="loader-word loader-word--accent">Vasa</span>
                     </div>
                 </div>
 

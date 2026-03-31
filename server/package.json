@@ -2,7 +2,7 @@
   "name": "madhwa-backend",
   "version": "1.0.0",
   "type": "commonjs",
-  "description": "Backend video-fetch server for Madhwa Hrudaya Vaasa",
+  "description": "Backend video-fetch server for Madhwa Hrudaya Vasa",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

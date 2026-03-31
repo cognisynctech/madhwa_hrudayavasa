@@ -11,7 +11,7 @@ const BASE = '/api'
  * @returns {Promise<Array>}
  */
 export async function fetchVideos() {
-    const res = await fetch(`${BASE}/videos`, { signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`${BASE}/videos`, { signal: AbortSignal.timeout(15000) })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const json = await res.json()
     return json.videos || []
@@ -22,7 +22,7 @@ export async function fetchVideos() {
  * @returns {Promise<Object|null>}
  */
 export async function fetchFeatured() {
-    const res = await fetch(`${BASE}/videos/featured`, { signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`${BASE}/videos/featured`, { signal: AbortSignal.timeout(15000) })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return res.json()
 }

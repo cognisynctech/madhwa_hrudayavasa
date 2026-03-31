@@ -60,7 +60,7 @@
     display: inline-block;
 }
 
-/* MADHWA + VAASA — Samarkan font */
+/* MADHWA + VASA — Samarkan font */
 .title-samarkan {
     font-family: var(--font-samarkan), serif;
     font-size: clamp(3rem, 9vw, 9.5rem);
@@ -85,7 +85,7 @@
     padding: 0;
 }
 
-.title-vaasa {
+.title-vasa {
     opacity: 1;
     margin-top: clamp(0.2rem, 0.5vw, 0.6rem);
 }
@@ -1187,7 +1187,7 @@ button.hl-card {
         font-size: clamp(2rem, 12vw, 3.2rem);
     }
 
-    .title-vaasa {
+    .title-vasa {
         font-size: clamp(2.6rem, 15vw, 4.5rem);
     }
 
@@ -1219,4 +1219,13 @@ button.hl-card {
 
     /* Hero socials: hide on tiny screens — doesn't fit */
     .hero-socials { display: none; }
+}
+.team-face-insta {
+    color: inherit;
+    opacity: 0.5;
+    transition: opacity 0.3s var(--ease);
+    line-height: 0;
+}
+.team-face-insta:hover {
+    opacity: 1;
 }

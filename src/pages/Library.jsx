@@ -14,7 +14,7 @@ export default function Library() {
     const [activeCategory, setActiveCategory] = useState('All')
     const [searchQuery, setSearchQuery]       = useState('')
 
-    useEffect(() => { document.title = 'Library | Madhwa Hrudaya Vaasa' }, [])
+    useEffect(() => { document.title = 'Library | Madhwa Hrudaya Vasa' }, [])
     const [videos, setVideos]                 = useState([])
     const [isLoading, setIsLoading]           = useState(true)
     const [apiStatus, setApiStatus]           = useState('loading')   // 'loading'|'live'|'offline'

@@ -1,5 +1,5 @@
 /**
- * Madhwa Hrudaya Vaasa — Video Backend Server
+ * Madhwa Hrudaya Vasa — Video Backend Server
  *
  * Fetches the latest videos from the YouTube channel, auto-classifies
  * them into categories, and serves them via a simple REST API.

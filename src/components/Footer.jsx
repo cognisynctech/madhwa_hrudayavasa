@@ -111,7 +111,7 @@ export default function Footer() {
                         <div className="footer-brand-row">
                             <img src={logoImg} alt="" className="footer-brand-logo" />
                             <div>
-                                <p className="footer-brand-name">Madhwa Hrudaya Vaasa</p>
+                                <p className="footer-brand-name">Madhwa Hrudaya Vasa</p>
                                 <p className="footer-brand-sub">Tattva · Bhakti · Vichara</p>
                             </div>
                         </div>
@@ -161,7 +161,7 @@ export default function Footer() {
                 <div className="footer-wordmark">
                     <span className="footer-wm-en">Madhwa</span>
                     <span className="footer-wm-kn">ಹೃದಯ</span>
-                    <span className="footer-wm-en footer-wm-en--dim">Vaasa</span>
+                    <span className="footer-wm-en footer-wm-en--dim">Vasa</span>
                 </div>
 
                 {/* Credit */}
