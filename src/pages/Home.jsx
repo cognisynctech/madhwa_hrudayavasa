@@ -29,11 +29,11 @@ function getTeamPhoto(name, photoSlug) {
     return key ? teamImages[key].default : null
 }
 const homeTeam = [
-    { name: 'Sarvottam', role: 'Direction', insta: '#' },
-    { name: 'Srinidhi',  role: 'Host', insta: '#' },
-    { name: 'Pranava',   role: 'Sound',    photoSlug: 'anirudha', insta: '#' },
-    { name: 'Anirudha',  role: 'Producer', photoSlug: 'pranava', insta: '#'  },
-    { name: 'Smriti',    role: 'Research', insta: '#' },
+    { name: 'Sarvottam', role: 'Direction', insta: 'https://www.instagram.com/sarvottamkatti?igsh=MW5wMnkwMTBvNGxhMg%3D%3D' },
+    { name: 'Srinidhi',  role: 'Host', insta: 'https://www.instagram.com/srinidhi_h_g?igsh=MTJ5NmdxZzVoNmU1bA%3D%3D' },
+    { name: 'Pranava',   role: 'Sound',    photoSlug: 'anirudha', insta: 'https://www.instagram.com/pranav_gudibande?igsh=MWlxa3JmeDdsZXVmOA==' },
+    { name: 'Anirudha',  role: 'Producer', photoSlug: 'pranava', insta: 'https://www.instagram.com/anirudhrao_43?igsh=dWpkMDA5aWxmczI%3D'  },
+    { name: 'Smriti',    role: 'Research', insta: 'https://www.instagram.com/smr.ithi02?igsh=OXNzN3Roc28zYjFs' },
 ]
 
 /* ─── Data ─── */
