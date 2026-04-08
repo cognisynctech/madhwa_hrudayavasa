@@ -24,8 +24,8 @@ const team = [
     { name: 'Sarvottam', insta: 'https://www.instagram.com/sarvottamkatti?igsh=MW5wMnkwMTBvNGxhMg%3D%3D' },
     { name: 'Srinidhi', insta: 'https://www.instagram.com/srinidhi_h_g?igsh=MTJ5NmdxZzVoNmU1bA%3D%3D' },
     { name: 'Pranava',  photoSlug: 'anirudha', insta: 'https://www.instagram.com/pranav_gudibande?igsh=MWlxa3JmeDdsZXVmOA==' },
-    { name: 'Anirudha', photoSlug: 'pranava', insta: 'https://www.instagram.com/anirudhrao_43?igsh=dWpkMDA5aWxmczI%3D'  },
-    { name: 'Smriti', insta: 'https://www.instagram.com/smr.ithi02?igsh=OXNzN3Roc28zYjFs' },
+    { name: 'S R Anirudh Rao', photoSlug: 'pranava', insta: 'https://www.instagram.com/anirudhrao_43?igsh=dWpkMDA5aWxmczI%3D'  },
+    { name: 'Smrithi Srinath', photoSlug: 'smriti', insta: 'https://www.instagram.com/smr.ithi02?igsh=OXNzN3Roc28zYjFs' },
 ]
 
 export default function Contact() {

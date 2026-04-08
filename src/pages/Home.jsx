@@ -32,8 +32,8 @@ const homeTeam = [
     { name: 'Sarvottam', role: 'Direction', insta: 'https://www.instagram.com/sarvottamkatti?igsh=MW5wMnkwMTBvNGxhMg%3D%3D' },
     { name: 'Srinidhi',  role: 'Host', insta: 'https://www.instagram.com/srinidhi_h_g?igsh=MTJ5NmdxZzVoNmU1bA%3D%3D' },
     { name: 'Pranava',   role: 'Sound',    photoSlug: 'anirudha', insta: 'https://www.instagram.com/pranav_gudibande?igsh=MWlxa3JmeDdsZXVmOA==' },
-    { name: 'Anirudha',  role: 'Producer', photoSlug: 'pranava', insta: 'https://www.instagram.com/anirudhrao_43?igsh=dWpkMDA5aWxmczI%3D'  },
-    { name: 'Smriti',    role: 'Research', insta: 'https://www.instagram.com/smr.ithi02?igsh=OXNzN3Roc28zYjFs' },
+    { name: 'S R Anirudh Rao',  role: 'Producer', photoSlug: 'pranava', insta: 'https://www.instagram.com/anirudhrao_43?igsh=dWpkMDA5aWxmczI%3D'  },
+    { name: 'Smrithi Srinath',    role: 'Research', photoSlug: 'smriti', insta: 'https://www.instagram.com/smr.ithi02?igsh=OXNzN3Roc28zYjFs' },
 ]
 
 /* ─── Data ─── */
@@ -216,7 +216,7 @@ function HeroSection({ loaded }) {
                 <div className="hero-bottom">
                     <p className="hero-col anim-fadein-delay1">Dwaita Siddhanta.<br />Conversations.</p>
                     <span className="hero-rule" />
-                    <p className="hero-col anim-fadein-delay2">Exploring philosophy with<br />the Acharyas of the Ashta Mathas.</p>
+                    <p className="hero-col anim-fadein-delay2">Exploring philosophy with<br />the Acharyas of the Madhwa Mathas.</p>
                     <span className="hero-arrow anim-fadein-delay2">↓</span>
                 </div>
             </div>
@@ -510,7 +510,7 @@ export default function Home({ loaded }) {
                     <div className="rule" />
                     <p className="mission-text">
                         We bring the living tradition of <em>Dwaita Siddhanta</em> to life — through long-form
-                        conversations with Swamijis, scholars, and practitioners of the Ashta Mathas. Deep
+                        conversations with Swamijis, scholars, and practitioners of the Madhwa Mathas. Deep
                         philosophy, spoken clearly.{' '}
                         <Link to="/library" className="mission-link">Explore the episodes ↗</Link>
                     </p>
