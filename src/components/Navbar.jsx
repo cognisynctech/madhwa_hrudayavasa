@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import logoImg from '../assets/pics/logo.jpg'
+import logoImg from '../assets/pics/logo.png'
 import './Navbar.css'
 
 /* Sections that have a light/white background */

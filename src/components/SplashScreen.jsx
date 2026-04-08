@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import logoImg from '../assets/pics/logo.jpg'
+import logoImg from '../assets/pics/logo.png'
 import './SplashScreen.css'
 
 /**

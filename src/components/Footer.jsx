@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import logoImg from '../assets/pics/logo.jpg'
+import logoImg from '../assets/pics/logo.png'
 import './Footer.css'
 
 gsap.registerPlugin(ScrollTrigger)
